@@ -9,7 +9,7 @@ const NavbarItem = ({className, startIcon: Icon, text, path}) => {
 			className={({isActive}) =>
 				classNames(
 					className,
-					"flex px-12 items-center relative text-primaryLight font-medium hover:text-white transition-colors border-l-2 border-transparent",
+					"flex whitespace-nowrap px-12 items-center relative text-primaryLight font-medium hover:text-white transition-colors border-l-2 border-transparent",
 					{"text-accent hover:text-accent border-accent": isActive}
 				)
 			}

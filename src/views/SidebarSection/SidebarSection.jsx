@@ -33,7 +33,11 @@ const SidebarSection = () => {
 					/>
 				</li>
 				<li>
-					<NavbarItem startIcon={MdMemory} text="Parsing" path={PARSING_ROUTE} />
+					<NavbarItem
+						startIcon={MdMemory}
+						text="Parsing"
+						path={PARSING_ROUTE}
+					/>
 				</li>
 				<li>
 					<NavbarItem startIcon={MdMail} text="Mailing" path={MAILING_ROUTE} />
