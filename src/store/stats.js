@@ -1,7 +1,7 @@
 import {makeAutoObservable} from "mobx";
 
 class Stats {
-	stats = []
+	stats = [];
 
 	constructor() {
 		makeAutoObservable(this);
@@ -11,3 +11,5 @@ class Stats {
 		this.stats = stats;
 	}
 }
+
+export default new Stats();

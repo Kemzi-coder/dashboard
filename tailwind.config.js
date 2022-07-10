@@ -1,15 +1,16 @@
-/** @type {import('tailwindcss').Config} */
+/** @type {import("tailwindcss").Config} */
 module.exports = {
-  content: ["./src/**/*.{js,jsx,ts,tsx}"],
-  theme: {
-    colors: {
-      primary: "#13161E",
-      primaryLighter: "#262931",
-      primaryLight: "#6C6C77",
-      accent: "#1F99C9",
-      white: "#FFFFFF",
-      transparent: "transparent"
-    },
-  },
-  plugins: [],
-}
+	content: ["./src/**/*.{js,jsx,ts,tsx}"],
+	theme: {
+		colors: {
+			primary: "#13161E",
+			primaryLighter: "#262931",
+			primaryLight: "#6C6C77",
+			accent: "#1F99C9",
+			white: "#FFFFFF",
+			transparent: "transparent",
+			danger: "#EF4444"
+		}
+	},
+	plugins: []
+};
