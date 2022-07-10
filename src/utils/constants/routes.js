@@ -10,3 +10,7 @@ export const SETTINGS_ROUTE = "/settings";
 export const PROFILE_ROUTE = "/accounts";
 
 export const MAILING_ROUTE = "/mailing";
+
+export const LOGIN_ROUTE = "/login";
+
+export const REGISTER_ROUTE = "/register";
