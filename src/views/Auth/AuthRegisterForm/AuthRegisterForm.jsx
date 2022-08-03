@@ -7,6 +7,7 @@ import FormFields from "../../../components/FormFields/FormFields";
 import FormTextField from "../../../components/FormTextField/FormTextField";
 import Button from "../../../components/Button/Button";
 import Auth from "../../../store/auth";
+import {authFormValidation} from "../../../validation";
 
 const AuthRegisterForm = () => {
 	const navigate = useNavigate();
@@ -40,14 +41,14 @@ const AuthRegisterForm = () => {
 						startIcon={MdPerson}
 						placeholder="Username"
 						name="username"
-						options={{required: "This field is required."}}
+						options={authFormValidation.username}
 					/>
 					<FormTextField
 						startIcon={MdPassword}
 						placeholder="Password"
 						name="password"
 						type="password"
-						options={{required: "This field is required."}}
+						options={authFormValidation.password}
 					/>
 				</FormFields>
 				{errors.response && (

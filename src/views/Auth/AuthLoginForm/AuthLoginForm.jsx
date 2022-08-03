@@ -7,6 +7,7 @@ import FormTextField from "../../../components/FormTextField/FormTextField";
 import FormFields from "../../../components/FormFields/FormFields";
 import {REGISTER_ROUTE} from "../../../utils/constants/routes";
 import Auth from "../../../store/auth";
+import {authFormValidation} from "../../../validation";
 
 const AuthLoginForm = () => {
 	const {
@@ -40,14 +41,14 @@ const AuthLoginForm = () => {
 						startIcon={MdPerson}
 						placeholder="Username"
 						name="username"
-						options={{required: "This field is required."}}
+						options={authFormValidation.username}
 					/>
 					<FormTextField
 						startIcon={MdPassword}
 						placeholder="Password"
 						name="password"
 						type="password"
-						options={{required: "This field is required."}}
+						options={authFormValidation.password}
 					/>
 				</FormFields>
 				{errors.response && (
