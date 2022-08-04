@@ -1,15 +1,21 @@
+import {observer} from "mobx-react-lite";
 import React from "react";
 import {Navigate, Route, Routes} from "react-router-dom";
-import {observer} from "mobx-react-lite";
+import Auth from "../../store/auth";
 import {
+	ACCOUNTS_GOOD_ROUTE,
+	ACCOUNTS_ROUTE,
+	ACCOUNTS_BAD_ROUTE,
 	HOME_ROUTE,
 	HOME_STATISTICS_ROUTE,
 	LOGIN_ROUTE,
+	ACCOUNTS_SMS_ROUTE,
+	ACCOUNTS_2FA_ROUTE,
 	REGISTER_ROUTE
 } from "../../utils/constants/routes";
-import HomePage from "../../views/Home/HomePage/HomePage";
-import Auth from "../../store/auth";
+import AccountsPage from "../../views/Accounts/AccountsPage/AccountsPage";
 import AuthPage from "../../views/Auth/AuthPage/AuthPage";
+import HomePage from "../../views/Home/HomePage/HomePage";
 import HomeStats from "../../views/Home/HomeStats/HomeStats";
 
 const AppRouter = observer(() => {
@@ -25,6 +31,14 @@ const AppRouter = observer(() => {
 					/>
 					<Route path={HOME_STATISTICS_ROUTE} element={<HomeStats />} />
 					<Route path="*" element={<Navigate to={HOME_STATISTICS_ROUTE} />} />
+				</Route>
+				<Route path={ACCOUNTS_ROUTE} element={<AccountsPage />}>
+					<Route index element={<Navigate to={ACCOUNTS_ROUTE} replace />} />
+					<Route path={ACCOUNTS_GOOD_ROUTE} element={<AccountsPage />} />
+					<Route path={ACCOUNTS_BAD_ROUTE} element={<AccountsPage />} />
+					<Route path={ACCOUNTS_SMS_ROUTE} element={<AccountsPage />} />
+					<Route path={ACCOUNTS_2FA_ROUTE} element={<AccountsPage />} />
+					<Route path="*" element={<Navigate to={ACCOUNTS_ROUTE} />} />
 				</Route>
 				<Route path="*" element={<Navigate to={HOME_STATISTICS_ROUTE} />} />
 			</Routes>
