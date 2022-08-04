@@ -5,7 +5,10 @@ const $api = axios.create({
 });
 
 $api.interceptors.request.use(config => {
-	config.data = {...config.data, access_token: localStorage.getItem("token")};
+	config.params = {
+		...config.params,
+		session_token: localStorage.getItem("token")
+	};
 
 	return config;
 });
