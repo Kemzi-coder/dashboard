@@ -1,11 +1,12 @@
 import React from "react";
 import TabItem from "../../../components/TabItem/TabItem";
 import {HOME_STATISTICS_ROUTE} from "../../../utils/constants/routes";
+import TabList from "../../../components/TabList/TabList";
 
 const HomeTabs = () => (
-	<div className="bg-primary px-16 space-x-8">
+	<TabList>
 		<TabItem text="Statistics" path={HOME_STATISTICS_ROUTE} />
-	</div>
+	</TabList>
 );
 
 export default HomeTabs;
