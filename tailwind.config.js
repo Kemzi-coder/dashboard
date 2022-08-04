@@ -9,7 +9,9 @@ module.exports = {
 			accent: "#1F99C9",
 			white: "#FFFFFF",
 			transparent: "transparent",
-			danger: "#EF4444"
+			danger: "#DC2626",
+			success: "#22C55E",
+			warning: "#FBBF24"
 		}
 	},
 	plugins: []
