@@ -17,7 +17,7 @@ class AuthAPI {
 	}
 
 	static check() {
-		return $api.post(`${process.env.REACT_APP_API_URL}service/check_session`);
+		return $api.get("service/check_session");
 	}
 }
 

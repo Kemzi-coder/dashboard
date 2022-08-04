@@ -2,8 +2,8 @@ const authFormValidation = {
 	username: {
 		required: "Username is required.",
 		minLength: {
-			value: 8,
-			message: "Username must be at least 8 characters long."
+			value: 5,
+			message: "Username must be at least 5 characters long."
 		}
 	},
 	password: {
