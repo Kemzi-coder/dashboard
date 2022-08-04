@@ -1,4 +1,5 @@
 export const HOME_ROUTE = "/home";
+
 export const HOME_STATISTICS_ROUTE = "/home/statistics";
 
 export const ACCOUNTS_ROUTE = "/accounts";

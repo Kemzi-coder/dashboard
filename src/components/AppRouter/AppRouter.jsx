@@ -2,6 +2,7 @@ import React from "react";
 import {Navigate, Route, Routes} from "react-router-dom";
 import {observer} from "mobx-react-lite";
 import {
+	HOME_ROUTE,
 	HOME_STATISTICS_ROUTE,
 	LOGIN_ROUTE,
 	REGISTER_ROUTE
@@ -9,6 +10,7 @@ import {
 import HomePage from "../../views/Home/HomePage/HomePage";
 import Auth from "../../store/auth";
 import AuthPage from "../../views/Auth/AuthPage/AuthPage";
+import HomeStats from "../../views/Home/HomeStats/HomeStats";
 
 const AppRouter = observer(() => {
 	const {isAuth} = Auth;
@@ -16,7 +18,14 @@ const AppRouter = observer(() => {
 	if (isAuth) {
 		return (
 			<Routes>
-				<Route path={HOME_STATISTICS_ROUTE} element={<HomePage />} />
+				<Route path={HOME_ROUTE} element={<HomePage />}>
+					<Route
+						index
+						element={<Navigate to={HOME_STATISTICS_ROUTE} replace />}
+					/>
+					<Route path={HOME_STATISTICS_ROUTE} element={<HomeStats />} />
+					<Route path="*" element={<Navigate to={HOME_STATISTICS_ROUTE} />} />
+				</Route>
 				<Route path="*" element={<Navigate to={HOME_STATISTICS_ROUTE} />} />
 			</Routes>
 		);
