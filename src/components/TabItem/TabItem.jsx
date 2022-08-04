@@ -5,6 +5,7 @@ import PropTypes from "prop-types";
 
 const TabItem = ({className, text, path}) => (
 	<NavLink
+		end
 		to={path}
 		className={({isActive}) =>
 			classNames(
