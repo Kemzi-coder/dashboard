@@ -15,7 +15,7 @@ const StatItem = ({value, title, className}) => (
 );
 
 StatItem.propTypes = {
-	value: PropTypes.string.isRequired,
+	value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
 	title: PropTypes.string.isRequired,
 	className: PropTypes.string
 };
