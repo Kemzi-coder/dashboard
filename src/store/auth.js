@@ -6,6 +6,8 @@ class Auth {
 
 	isAuth = false;
 
+	isLoading = false;
+
 	constructor() {
 		makeAutoObservable(this);
 	}
@@ -16,6 +18,10 @@ class Auth {
 
 	setUser(user) {
 		this.user = user;
+	}
+
+	setIsLoading(isLoading) {
+		this.isLoading = isLoading;
 	}
 
 	async login({username, password}, setError) {
@@ -43,6 +49,7 @@ class Auth {
 	}
 
 	async check() {
+		this.setIsLoading(true);
 		try {
 			const response = await AuthAPI.check();
 			console.log(response);
@@ -50,6 +57,8 @@ class Auth {
 			this.setUser(response.data.result.user);
 		} catch (e) {
 			console.log(e);
+		} finally {
+			this.setIsLoading(false);
 		}
 	}
 }
