@@ -2,7 +2,9 @@ import {observer} from "mobx-react-lite";
 import React, {useCallback, useEffect, useRef} from "react";
 import {useLocation} from "react-router-dom";
 import AccountItem from "../../../components/AccountItem/AccountItem";
+import CopyModal from "../../../components/CopyModal/CopyModal";
 import MainLayout from "../../../components/MainLayout/MainLayout";
+import useCopyModal from "../../../hooks/useCopyModal.hook";
 import useObserver from "../../../hooks/useObserver.hook";
 import Accounts from "../../../store/accounts";
 import Stats from "../../../store/stats";
@@ -18,6 +20,9 @@ const AccountsPage = observer(() => {
 	const location = useLocation();
 	const lastElement = useRef(null);
 	const {isLoading, accounts, page, totalPageCount, limit} = Accounts;
+
+	const copyModal = useRef(null);
+	const {handleClick, isCopied, setIsCopied} = useCopyModal(copyModal);
 
 	const hasMore = page < totalPageCount;
 
@@ -71,6 +76,11 @@ const AccountsPage = observer(() => {
 		<MainLayout>
 			<AccountsTabs />
 			<div className="order-1 bg-primary container mx-auto py-8 px-16">
+				<CopyModal
+					ref={copyModal}
+					isCopied={isCopied}
+					setIsCopied={setIsCopied}
+				/>
 				<table className="table-fixed w-full">
 					<thead className="border-b-2 border-transparent">
 						<tr className="text-left [&_th]:font-normal [&_th]:py-3 [&_th]:px-3 border rounded-2xl border-primaryLighter">
@@ -86,6 +96,7 @@ const AccountsPage = observer(() => {
 					<tbody>
 						{accounts.map((account, index) => (
 							<AccountItem
+								onClick={handleClick}
 								key={account.uuid}
 								firstName={account?.profile?.first_name}
 								lastName={account?.profile?.last_name}
