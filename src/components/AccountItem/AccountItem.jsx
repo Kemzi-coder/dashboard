@@ -1,8 +1,8 @@
-import React from "react";
-import PropTypes from "prop-types";
 import classNames from "classnames";
-import Avatar from "../Avatar/Avatar";
+import PropTypes from "prop-types";
+import React from "react";
 import getFullName from "../../utils/helpers/getFullName";
+import Avatar from "../Avatar/Avatar";
 
 const AccountItem = ({
 	number,
@@ -12,7 +12,8 @@ const AccountItem = ({
 	lastName,
 	username,
 	photo,
-	uuid
+	uuid,
+	onClick
 }) => {
 	const fullName = getFullName(firstName, lastName);
 	const fallbackStr = "–";
@@ -21,8 +22,6 @@ const AccountItem = ({
 		"text-warning": status === "sms" || status === "2fa",
 		"text-success": status === "good"
 	};
-
-	const handleClick = e => navigator.clipboard.writeText(e.target.textContent);
 
 	return (
 		<tr className="border rounded-2xl border-primaryLighter">
@@ -40,28 +39,28 @@ const AccountItem = ({
 			</td>
 			<td
 				role="presentation"
-				onClick={handleClick}
-				className="py-3 px-3 text-ellipsis overflow-hidden cursor-pointer whitespace-nowrap"
+				onClick={onClick}
+				className="relative py-3 px-3 text-ellipsis overflow-hidden cursor-pointer whitespace-nowrap"
 			>
 				{fullName || fallbackStr}
 			</td>
 			<td
 				role="presentation"
-				onClick={handleClick}
+				onClick={onClick}
 				className="py-3 px-3 text-ellipsis overflow-hidden cursor-pointer whitespace-nowrap"
 			>
 				{username || fallbackStr}
 			</td>
 			<td
 				role="presentation"
-				onClick={handleClick}
+				onClick={onClick}
 				className="py-3 px-3 text-ellipsis overflow-hidden cursor-pointer whitespace-nowrap"
 			>
 				{phone || fallbackStr}
 			</td>
 			<td
 				role="presentation"
-				onClick={handleClick}
+				onClick={onClick}
 				className="py-3 px-3 text-ellipsis overflow-hidden cursor-pointer whitespace-nowrap"
 			>
 				{uuid || fallbackStr}
@@ -78,7 +77,8 @@ AccountItem.propTypes = {
 	firstName: PropTypes.string.isRequired,
 	lastName: PropTypes.string.isRequired,
 	username: PropTypes.string.isRequired,
-	photo: PropTypes.string.isRequired
+	photo: PropTypes.string.isRequired,
+	onClick: PropTypes.func.isRequired
 };
 
 export default AccountItem;
