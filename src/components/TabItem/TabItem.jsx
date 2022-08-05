@@ -3,9 +3,16 @@ import {NavLink} from "react-router-dom";
 import classNames from "classnames";
 import PropTypes from "prop-types";
 
-const TabItem = ({className, text, path}) => (
+const TabItem = ({className, text, path, isDisabled}) => (
 	<NavLink
 		end
+		onClick={
+			isDisabled
+				? e => {
+						e.preventDefault();
+				  }
+				: null
+		}
 		to={path}
 		className={({isActive}) =>
 			classNames(
@@ -22,10 +29,12 @@ const TabItem = ({className, text, path}) => (
 TabItem.propTypes = {
 	text: PropTypes.string.isRequired,
 	path: PropTypes.string.isRequired,
+	isDisabled: PropTypes.bool,
 	className: PropTypes.string
 };
 
 TabItem.defaultProps = {
+	isDisabled: false,
 	className: ""
 };
 
