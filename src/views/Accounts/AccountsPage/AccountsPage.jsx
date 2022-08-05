@@ -3,6 +3,7 @@ import {useLocation} from "react-router-dom";
 import {observer} from "mobx-react-lite";
 import MainLayout from "../../../components/MainLayout/MainLayout";
 import Accounts from "../../../store/accounts";
+import Stats from "../../../store/stats";
 import {
 	ACCOUNTS_BAD_ROUTE,
 	ACCOUNTS_GOOD_ROUTE,
@@ -15,6 +16,10 @@ import AccountItem from "../../../components/AccountItem/AccountItem";
 const AccountsPage = observer(() => {
 	const location = useLocation();
 	const {isLoading, accounts} = Accounts;
+
+	useEffect(() => {
+		Stats.fetchAll();
+	}, []);
 
 	useEffect(() => {
 		switch (location.pathname) {
@@ -35,7 +40,7 @@ const AccountsPage = observer(() => {
 		}
 	}, [location.pathname]);
 
-	useEffect(() => () => Accounts.setAccounts([]), []);
+	useEffect(() => () => Accounts.setIsLoading(true), []);
 
 	return (
 		<MainLayout>
@@ -46,14 +51,14 @@ const AccountsPage = observer(() => {
 				) : (
 					<table className="table-fixed w-full">
 						<thead className="border-b-2 border-transparent">
-							<tr className="text-left font-light border rounded-2xl border-primaryLighter">
-								<th className="py-3 px-3">No.</th>
-								<th className="py-3 px-3">UUID</th>
-								<th className="py-3 px-3">Photo</th>
-								<th className="py-3 px-3">Name</th>
-								<th className="py-3 px-3">Username</th>
-								<th className="py-3 px-3">Phone</th>
-								<th className="py-3 px-3">Status</th>
+							<tr className="text-left [&_th]:font-normal [&_th]:py-3 [&_th]:px-3 border rounded-2xl border-primaryLighter">
+								<th>No.</th>
+								<th>Status</th>
+								<th>Photo</th>
+								<th>Name</th>
+								<th>Username</th>
+								<th>Phone</th>
+								<th>UUID</th>
 							</tr>
 						</thead>
 						<tbody>
