@@ -2,6 +2,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import classNames from "classnames";
 import Avatar from "../Avatar/Avatar";
+import getFullName from "../../utils/helpers/getFullName";
 
 const AccountItem = ({
 	number,
@@ -13,50 +14,57 @@ const AccountItem = ({
 	photo,
 	uuid
 }) => {
+	const fullName = getFullName(firstName, lastName);
+	const fallbackStr = "–";
+	const statusClassConditions = {
+		"text-danger": status === "bad",
+		"text-warning": status === "sms" || status === "2fa",
+		"text-success": status === "good"
+	};
+
 	const handleClick = e => navigator.clipboard.writeText(e.target.textContent);
 
 	return (
 		<tr className="border rounded-2xl border-primaryLighter">
 			<td className="py-3 px-3 text-ellipsis overflow-hidden">{number}</td>
 			<td
-				role="presentation"
-				onClick={handleClick}
-				className="py-3 px-3 text-ellipsis overflow-hidden cursor-pointer"
+				className={classNames(
+					"py-3 px-3 text-ellipsis overflow-hidden whitespace-nowrap",
+					statusClassConditions
+				)}
 			>
-				{uuid || "Not found"}
+				{status || fallbackStr}
 			</td>
-			<td className="py-3 px-3 text-ellipsis overflow-hidden">
-				<Avatar imagePath={photo} />
-			</td>
-			<td
-				role="presentation"
-				onClick={handleClick}
-				className="py-3 px-3 text-ellipsis overflow-hidden cursor-pointer"
-			>
-				{firstName && lastName ? `${firstName} ${lastName}` : "Not found"}
+			<td className="py-3 px-3 text-ellipsis overflow-hidden whitespace-nowrap">
+				{photo ? <Avatar imagePath={photo} /> : fallbackStr}
 			</td>
 			<td
 				role="presentation"
 				onClick={handleClick}
-				className="py-3 px-3 text-ellipsis overflow-hidden cursor-pointer"
+				className="py-3 px-3 text-ellipsis overflow-hidden cursor-pointer whitespace-nowrap"
 			>
-				{username || "Not found"}
+				{fullName || fallbackStr}
 			</td>
 			<td
 				role="presentation"
 				onClick={handleClick}
-				className="py-3 px-3 text-ellipsis overflow-hidden cursor-pointer"
+				className="py-3 px-3 text-ellipsis overflow-hidden cursor-pointer whitespace-nowrap"
 			>
-				{phone || "Not found"}
+				{username || fallbackStr}
 			</td>
 			<td
-				className={classNames("py-3 px-3 text-ellipsis overflow-hidden", {
-					"text-danger": status === "bad",
-					"text-warning": status === "sms" || status === "2fa",
-					"text-success": status === "good"
-				})}
+				role="presentation"
+				onClick={handleClick}
+				className="py-3 px-3 text-ellipsis overflow-hidden cursor-pointer whitespace-nowrap"
 			>
-				{status || "Not found"}
+				{phone || fallbackStr}
+			</td>
+			<td
+				role="presentation"
+				onClick={handleClick}
+				className="py-3 px-3 text-ellipsis overflow-hidden cursor-pointer whitespace-nowrap"
+			>
+				{uuid || fallbackStr}
 			</td>
 		</tr>
 	);
