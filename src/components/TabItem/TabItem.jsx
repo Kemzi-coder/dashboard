@@ -17,8 +17,11 @@ const TabItem = ({className, text, path, isDisabled}) => (
 		className={({isActive}) =>
 			classNames(
 				className,
-				"font-semibold py-8 text-primaryLight text-lg border-b-2 border-transparent hover:text-white transition-colors inline-block",
-				{"text-accent border-accent hover:text-accent": isActive}
+				"font-semibold py-8 text-lg border-b-2 transition-colors inline-block",
+				{
+					"text-accent border-accent hover:text-accent": isActive,
+					"text-primaryLight border-transparent hover:text-white": !isActive
+				}
 			)
 		}
 	>
