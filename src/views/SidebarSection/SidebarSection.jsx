@@ -7,6 +7,7 @@ import {
 	MdPerson,
 	MdSettings
 } from "react-icons/md";
+import {FaNetworkWired} from "react-icons/fa";
 import Navbar from "../../components/Navbar/Navbar";
 import NavbarItem from "../../components/NavbarItem/NavbarItem";
 import {
@@ -15,6 +16,7 @@ import {
 	MAILING_ROUTE,
 	PARSING_ROUTE,
 	PROFILE_ROUTE,
+	PROXY_ROUTE,
 	SETTINGS_ROUTE
 } from "../../utils/constants/routes";
 
@@ -42,6 +44,13 @@ const SidebarSection = () => (
 					startIcon={MdPerson}
 					text="My Profile"
 					path={PROFILE_ROUTE}
+				/>
+			</li>
+			<li>
+				<NavbarItem
+					startIcon={FaNetworkWired}
+					text="Proxy"
+					path={PROXY_ROUTE}
 				/>
 			</li>
 			<li>
