@@ -7,25 +7,28 @@ const Input = forwardRef(({startIcon: Icon, isInvalid, ...props}, ref) => (
 		<input
 			ref={ref}
 			className={classNames(
-				"peer text-lg w-full rounded-2xl bg-transparent border-primaryLighter border py-2 pl-12 pr-4 text-white placeholder:text-primaryLight",
-				{"border-danger": isInvalid}
+				"peer text-lg w-full rounded-2xl bg-transparent border-primaryLighter border py-2 text-white placeholder:text-primaryLight",
+				{"border-danger": isInvalid, "pl-12 pr-4": !!Icon, "px-4": !Icon}
 			)}
 			type="text"
 			{...props}
 		/>
-		<Icon
-			className="peer-focus:text-white transition-colors absolute left-4 text-primaryLight peer-focus:text-white peer"
-			size={22}
-		/>
+		{Icon && (
+			<Icon
+				className="peer-focus:text-white transition-colors absolute left-4 text-primaryLight peer-focus:text-white peer"
+				size={22}
+			/>
+		)}
 	</div>
 ));
 
 Input.propTypes = {
-	startIcon: PropTypes.elementType.isRequired,
+	startIcon: PropTypes.elementType,
 	isInvalid: bool
 };
 
 Input.defaultProps = {
+	startIcon: null,
 	isInvalid: false
 };
 
