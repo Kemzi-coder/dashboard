@@ -12,6 +12,14 @@ export const ACCOUNTS_SMS_ROUTE = "/accounts/sms";
 
 export const ACCOUNTS_2FA_ROUTE = "/accounts/2fa";
 
+export const PROXY_ROUTE = "/proxy";
+
+export const PROXY_SHARED_ROUTE = "/proxy/shared";
+
+export const PROXY_PRIVATE_ROUTE = "/proxy/private";
+
+export const PROXY_CREATE_ROUTE = "/proxy/create";
+
 export const PARSING_ROUTE = "/parsing";
 
 export const SETTINGS_ROUTE = "/settings";
