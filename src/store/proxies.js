@@ -1,5 +1,6 @@
 import {makeAutoObservable} from "mobx";
 import ProxiesAPI from "../API/proxies/proxies.api";
+import getHasMore from "../utils/helpers/getHasMore";
 
 class Proxies {
 	proxies = [];
@@ -10,9 +11,9 @@ class Proxies {
 
 	limit = 2;
 
-	totalPageCount = 0;
-
 	inAction = false;
+
+	hasMore = false;
 
 	constructor() {
 		makeAutoObservable(this);
@@ -20,10 +21,6 @@ class Proxies {
 
 	setPage(page) {
 		this.page = page;
-	}
-
-	setTotalPageCount(totalPageCount) {
-		this.totalPageCount = totalPageCount;
 	}
 
 	setProxies(proxies) {
@@ -59,6 +56,10 @@ class Proxies {
 
 	setInAction(inAction) {
 		this.inAction = inAction;
+	}
+
+	setHasMore(hasMore) {
+		this.hasMore = hasMore;
 	}
 
 	async delete(uuid) {
@@ -106,8 +107,12 @@ class Proxies {
 		try {
 			const response = await ProxiesAPI.fetchPrivate(params);
 			console.log(response);
+			const {page} = response.data.result;
+			const totalPageCount = response.data.result.total_page;
+
+			this.setHasMore(getHasMore(page, totalPageCount));
+
 			this.setProxies(response.data.result.proxy);
-			this.setTotalPageCount(response.data.result.total_page);
 			this.setPage(response.data.result.page);
 		} catch (e) {
 			console.log(e);
@@ -121,6 +126,11 @@ class Proxies {
 		try {
 			const response = await ProxiesAPI.fetchPrivate(params);
 			console.log(response);
+			const {page} = response.data.result;
+			const totalPageCount = response.data.result.total_page;
+
+			this.setHasMore(getHasMore(page, totalPageCount));
+
 			this.addProxies(response.data.result.proxy);
 			this.setPage(response.data.result.page);
 		} catch (e) {
@@ -136,8 +146,12 @@ class Proxies {
 		try {
 			const response = await ProxiesAPI.fetchShared(params);
 			console.log(response);
+			const {page} = response.data.result;
+			const totalPageCount = response.data.result.total_page;
+
+			this.setHasMore(getHasMore(page, totalPageCount));
+
 			this.setProxies(response.data.result.proxy);
-			this.setTotalPageCount(response.data.result.total_page);
 			this.setPage(response.data.result.page);
 		} catch (e) {
 			console.log(e);
@@ -151,6 +165,11 @@ class Proxies {
 		try {
 			const response = await ProxiesAPI.fetchShared(params);
 			console.log(response);
+			const {page} = response.data.result;
+			const totalPageCount = response.data.result.total_page;
+
+			this.setHasMore(getHasMore(page, totalPageCount));
+
 			this.addProxies(response.data.result.proxy);
 			this.setPage(response.data.result.page);
 		} catch (e) {
