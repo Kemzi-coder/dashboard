@@ -1,8 +1,11 @@
-import classNames from "classnames";
 import PropTypes from "prop-types";
 import React, {useState} from "react";
 import {useForm} from "react-hook-form";
 import formatDate from "../../utils/helpers/formatDate";
+import {TableCell, TableRow} from "../Table";
+import {tableFallbackStr} from "../../utils/constants/fallback";
+import ProxyItemButtons from "./ProxyItemButtons";
+import {getStatusClass} from "../../utils/constants/table";
 
 const ProxyItem = ({
 	status,
@@ -14,7 +17,8 @@ const ProxyItem = ({
 	onClick,
 	onDelete,
 	onSave,
-	isPrivate
+	isActionsAllowed,
+	isLoading
 }) => {
 	const {
 		handleSubmit,
@@ -24,12 +28,7 @@ const ProxyItem = ({
 
 	const [isEditable, setIsEditable] = useState(false);
 	const formattedDate = formatDate(new Date(checkedAt));
-	const fallbackStr = "–";
-	const statusClassConditions = {
-		"text-danger": status === "bad",
-		"text-warning": status === "sms" || status === "2fa",
-		"text-success": status === "good"
-	};
+	const statusClass = getStatusClass(status);
 
 	const handleEdit = () => setIsEditable(true);
 
@@ -41,17 +40,12 @@ const ProxyItem = ({
 	};
 
 	return (
-		<tr className="border rounded-2xl border-primaryLighter">
-			<td className="py-3 px-3 text-ellipsis overflow-hidden">{number}</td>
-			<td
-				className={classNames(
-					"py-3 px-3 text-ellipsis overflow-hidden whitespace-nowrap",
-					statusClassConditions
-				)}
-			>
-				{status || fallbackStr}
-			</td>
-			<td className="py-3 px-3 text-ellipsis overflow-hidden whitespace-nowrap">
+		<TableRow>
+			<TableCell>{number}</TableCell>
+			<TableCell className={statusClass}>
+				{status || tableFallbackStr}
+			</TableCell>
+			<TableCell>
 				{isEditable ? (
 					<input
 						className="bg-transparent w-full text-white border border-primaryLighter rounded-2xl py-1 px-2"
@@ -60,14 +54,10 @@ const ProxyItem = ({
 						{...register("proxy_type")}
 					/>
 				) : (
-					type || fallbackStr
+					type || tableFallbackStr
 				)}
-			</td>
-			<td
-				role="presentation"
-				onClick={onClick}
-				className="relative py-3 px-3 text-ellipsis overflow-hidden cursor-pointer whitespace-nowrap"
-			>
+			</TableCell>
+			<TableCell role="presentation" onClick={onClick}>
 				{isEditable ? (
 					<input
 						className="bg-transparent w-full text-white border border-primaryLighter rounded-2xl py-1 px-2"
@@ -76,69 +66,53 @@ const ProxyItem = ({
 						{...register("proxy_host")}
 					/>
 				) : (
-					host || fallbackStr
+					host || tableFallbackStr
 				)}
-			</td>
-			<td
-				role="presentation"
-				onClick={onClick}
-				className="py-3 px-3 text-ellipsis overflow-hidden cursor-pointer whitespace-nowrap"
-			>
-				{formattedDate || fallbackStr}
-			</td>
-			<td
-				role="presentation"
-				onClick={onClick}
-				className="py-3 px-3 text-ellipsis overflow-hidden cursor-pointer whitespace-nowrap"
-			>
-				{uuid || fallbackStr}
-			</td>
-			{isPrivate && (
-				<td
-					role="presentation"
-					className="flex py-3 px-3 text-ellipsis overflow-hidden cursor-pointer whitespace-nowrap"
-				>
-					{isEditable ? (
-						<button
-							onClick={handleSave}
-							className="mr-3 border border-success rounded-2xl py-1 text-sm px-2 hover:text-primary hover:bg-success transition-colors"
-							type="button"
-						>
-							save
-						</button>
-					) : (
-						<button
-							onClick={handleEdit}
-							className="mr-3 border border-warning rounded-2xl py-1 text-sm px-2 hover:text-primary hover:bg-warning transition-colors"
-							type="button"
-						>
-							edit
-						</button>
-					)}
-					<button
-						className="border border-danger rounded-2xl py-1 text-sm px-2 hover:bg-danger hover:text-primary transition-colors"
-						onClick={onDelete}
-						type="button"
-					>
-						delete
-					</button>
-				</td>
+			</TableCell>
+			<TableCell role="presentation" onClick={onClick}>
+				{formattedDate || tableFallbackStr}
+			</TableCell>
+			<TableCell role="presentation" onClick={onClick}>
+				{uuid || tableFallbackStr}
+			</TableCell>
+			{isActionsAllowed && (
+				<ProxyItemButtons
+					isEditable={isEditable}
+					isLoading={isLoading}
+					onDelete={onDelete}
+					onEdit={handleEdit}
+					onSave={handleSave}
+				/>
 			)}
-		</tr>
+		</TableRow>
 	);
 };
 
 ProxyItem.propTypes = {
-	type: PropTypes.string.isRequired,
-	status: PropTypes.string.isRequired,
-	host: PropTypes.string.isRequired,
-	uuid: PropTypes.string.isRequired,
-	checkedAt: PropTypes.string.isRequired,
+	type: PropTypes.string,
+	status: PropTypes.string,
+	host: PropTypes.string,
+	uuid: PropTypes.string,
+	checkedAt: PropTypes.string,
 	number: PropTypes.number.isRequired,
-	onClick: PropTypes.func.isRequired,
-	onDelete: PropTypes.func.isRequired,
-	isPrivate: PropTypes.bool.isRequired,
-	onSave: PropTypes.func.isRequired
+	onClick: PropTypes.func,
+	onDelete: PropTypes.func,
+	isActionsAllowed: PropTypes.bool,
+	onSave: PropTypes.func,
+	isLoading: PropTypes.bool
+};
+
+ProxyItem.defaultProps = {
+	onClick: null,
+	onDelete: null,
+	isActionsAllowed: false,
+	isLoading: false,
+	onSave: null,
+	uuid: "",
+	checkedAt: "",
+	host: "",
+	status: "",
+	type: ""
 };
 
 export default ProxyItem;
