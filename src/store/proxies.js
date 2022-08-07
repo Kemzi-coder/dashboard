@@ -12,6 +12,8 @@ class Proxies {
 
 	totalPageCount = 0;
 
+	inAction = false;
+
 	constructor() {
 		makeAutoObservable(this);
 	}
@@ -55,17 +57,25 @@ class Proxies {
 		this.isLoading = isLoading;
 	}
 
+	setInAction(inAction) {
+		this.inAction = inAction;
+	}
+
 	async delete(uuid) {
+		this.setInAction(true);
 		try {
 			const response = await ProxiesAPI.delete(uuid);
 			console.log(response);
 			this.deleteProxy(uuid);
 		} catch (e) {
 			console.log(e);
+		} finally {
+			this.setInAction(false);
 		}
 	}
 
 	async edit(uuid, proxy) {
+		this.setInAction(true);
 		try {
 			const response = await ProxiesAPI.edit(uuid, proxy);
 			console.log(response);
@@ -75,6 +85,8 @@ class Proxies {
 			);
 		} catch (e) {
 			console.log(e);
+		} finally {
+			this.setInAction(false);
 		}
 	}
 

@@ -7,11 +7,18 @@ import useObserver from "../../../hooks/useObserver.hook";
 import {PROXY_PRIVATE_ROUTE} from "../../../utils/constants/routes";
 import CopyModal from "../../../components/CopyModal/CopyModal";
 import ProxyItem from "../../../components/ProxyItem/ProxyItem";
+import {
+	Table,
+	TableHead,
+	TableBody,
+	TableHeadCell,
+	TableRow
+} from "../../../components/Table";
 
 const ProxyTable = observer(() => {
 	const location = useLocation();
 	const lastElement = useRef(null);
-	const {isLoading, proxies, page, totalPageCount, limit} = Proxies;
+	const {isLoading, proxies, page, totalPageCount, limit, inAction} = Proxies;
 
 	const copyModal = useRef(null);
 	const {handleClick, isCopied, setIsCopied} = useCopyModal(copyModal);
@@ -58,23 +65,25 @@ const ProxyTable = observer(() => {
 				isCopied={isCopied}
 				setIsCopied={setIsCopied}
 			/>
-			<table className="table-fixed w-full">
-				<thead className="border-b-2 border-transparent">
-					<tr className="text-left [&_th]:font-normal [&_th]:py-3 [&_th]:px-3 border rounded-2xl border-primaryLighter">
-						<th className="w-1/12">No.</th>
-						<th>Status</th>
-						<th>Type</th>
-						<th>Host</th>
-						<th>Checked</th>
-						<th>UUID</th>
-						{proxies.every(proxy => proxy.shared === false) && <th>Actions</th>}
-					</tr>
-				</thead>
-				<tbody>
+			<Table>
+				<TableHead>
+					<TableRow>
+						<TableHeadCell className="w-1/12">No.</TableHeadCell>
+						<TableHeadCell>Status</TableHeadCell>
+						<TableHeadCell>Type</TableHeadCell>
+						<TableHeadCell>Host</TableHeadCell>
+						<TableHeadCell>Checked</TableHeadCell>
+						<TableHeadCell>UUID</TableHeadCell>
+						{proxies.some(proxy => proxy.allow_edit === true) && (
+							<TableHeadCell>Actions</TableHeadCell>
+						)}
+					</TableRow>
+				</TableHead>
+				<TableBody>
 					{proxies.map((proxy, index) => (
 						<ProxyItem
 							onSave={handleSave(proxy.uuid)}
-							isPrivate={!proxy.shared}
+							isActionsAllowed={proxy.allow_edit}
 							onDelete={() => handleDelete(proxy.uuid)}
 							number={index + 1}
 							onClick={handleClick}
@@ -84,10 +93,11 @@ const ProxyTable = observer(() => {
 							checkedAt={proxy.checked_at}
 							uuid={proxy.uuid}
 							type={proxy.proxy_type}
+							isLoading={inAction}
 						/>
 					))}
-				</tbody>
-			</table>
+				</TableBody>
+			</Table>
 			<div ref={lastElement} />
 			{isLoading && "Loading..."}
 		</>
