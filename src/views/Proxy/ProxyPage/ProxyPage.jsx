@@ -2,13 +2,14 @@ import React from "react";
 import {Outlet} from "react-router-dom";
 import MainLayout from "../../../components/MainLayout/MainLayout";
 import ProxyTabs from "../ProxyTabs/ProxyTabs";
+import MainBody from "../../../components/MainBody/MainBody";
 
 const ProxyPage = () => (
 	<MainLayout>
 		<ProxyTabs />
-		<div className="order-1 bg-primary container mx-auto py-8 px-16">
+		<MainBody>
 			<Outlet />
-		</div>
+		</MainBody>
 	</MainLayout>
 );
 
