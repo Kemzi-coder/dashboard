@@ -1,8 +1,10 @@
-import classNames from "classnames";
 import PropTypes from "prop-types";
 import React from "react";
 import getFullName from "../../utils/helpers/getFullName";
 import Avatar from "../Avatar/Avatar";
+import {TableCell, TableRow} from "../Table";
+import {tableFallbackStr} from "../../utils/constants/fallback";
+import {getStatusClass} from "../../utils/constants/table";
 
 const AccountItem = ({
 	number,
@@ -16,69 +18,54 @@ const AccountItem = ({
 	onClick
 }) => {
 	const fullName = getFullName(firstName, lastName);
-	const fallbackStr = "–";
-	const statusClassConditions = {
-		"text-danger": status === "bad",
-		"text-warning": status === "sms" || status === "2fa",
-		"text-success": status === "good"
-	};
+	const statusClass = getStatusClass(status);
 
 	return (
-		<tr className="border rounded-2xl border-primaryLighter">
-			<td className="py-3 px-3 text-ellipsis overflow-hidden">{number}</td>
-			<td
-				className={classNames(
-					"py-3 px-3 text-ellipsis overflow-hidden whitespace-nowrap",
-					statusClassConditions
-				)}
-			>
-				{status || fallbackStr}
-			</td>
-			<td className="py-3 px-3 text-ellipsis overflow-hidden whitespace-nowrap">
-				{photo ? <Avatar imagePath={photo} /> : fallbackStr}
-			</td>
-			<td
-				role="presentation"
-				onClick={onClick}
-				className="relative py-3 px-3 text-ellipsis overflow-hidden cursor-pointer whitespace-nowrap"
-			>
-				{fullName || fallbackStr}
-			</td>
-			<td
-				role="presentation"
-				onClick={onClick}
-				className="py-3 px-3 text-ellipsis overflow-hidden cursor-pointer whitespace-nowrap"
-			>
-				{username || fallbackStr}
-			</td>
-			<td
-				role="presentation"
-				onClick={onClick}
-				className="py-3 px-3 text-ellipsis overflow-hidden cursor-pointer whitespace-nowrap"
-			>
-				{phone || fallbackStr}
-			</td>
-			<td
-				role="presentation"
-				onClick={onClick}
-				className="py-3 px-3 text-ellipsis overflow-hidden cursor-pointer whitespace-nowrap"
-			>
-				{uuid || fallbackStr}
-			</td>
-		</tr>
+		<TableRow>
+			<TableCell>{number}</TableCell>
+			<TableCell className={statusClass}>
+				{status || tableFallbackStr}
+			</TableCell>
+			<TableCell>
+				{photo ? <Avatar imagePath={photo} /> : tableFallbackStr}
+			</TableCell>
+			<TableCell role="presentation" onClick={onClick}>
+				{fullName || tableFallbackStr}
+			</TableCell>
+			<TableCell role="presentation" onClick={onClick}>
+				{username || tableFallbackStr}
+			</TableCell>
+			<TableCell role="presentation" onClick={onClick}>
+				{phone || tableFallbackStr}
+			</TableCell>
+			<TableCell role="presentation" onClick={onClick}>
+				{uuid || tableFallbackStr}
+			</TableCell>
+		</TableRow>
 	);
 };
 
 AccountItem.propTypes = {
 	number: PropTypes.number.isRequired,
-	uuid: PropTypes.string.isRequired,
-	phone: PropTypes.string.isRequired,
-	status: PropTypes.string.isRequired,
-	firstName: PropTypes.string.isRequired,
-	lastName: PropTypes.string.isRequired,
-	username: PropTypes.string.isRequired,
-	photo: PropTypes.string.isRequired,
-	onClick: PropTypes.func.isRequired
+	uuid: PropTypes.string,
+	phone: PropTypes.string,
+	status: PropTypes.string,
+	firstName: PropTypes.string,
+	lastName: PropTypes.string,
+	username: PropTypes.string,
+	photo: PropTypes.string,
+	onClick: PropTypes.func
+};
+
+AccountItem.defaultProps = {
+	onClick: null,
+	uuid: "",
+	phone: "",
+	status: "",
+	firstName: "",
+	lastName: "",
+	username: "",
+	photo: ""
 };
 
 export default AccountItem;
