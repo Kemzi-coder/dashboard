@@ -18,6 +18,7 @@ import {
 	PROXY_CREATE_ROUTE
 } from "../../utils/constants/routes";
 import AccountsPage from "../../views/Accounts/AccountsPage/AccountsPage";
+import AccountsTable from "../../views/Accounts/AccountsTable/AccountsTable";
 import AuthPage from "../../views/Auth/AuthPage/AuthPage";
 import HomePage from "../../views/Home/HomePage/HomePage";
 import HomeStats from "../../views/Home/HomeStats/HomeStats";
@@ -40,11 +41,11 @@ const AppRouter = observer(() => {
 					<Route path="*" element={<Navigate to={HOME_STATISTICS_ROUTE} />} />
 				</Route>
 				<Route path={ACCOUNTS_ROUTE} element={<AccountsPage />}>
-					<Route index element={<Navigate to={ACCOUNTS_ROUTE} replace />} />
-					<Route path={ACCOUNTS_GOOD_ROUTE} element={<AccountsPage />} />
-					<Route path={ACCOUNTS_BAD_ROUTE} element={<AccountsPage />} />
-					<Route path={ACCOUNTS_SMS_ROUTE} element={<AccountsPage />} />
-					<Route path={ACCOUNTS_2FA_ROUTE} element={<AccountsPage />} />
+					<Route index element={<AccountsTable />} />
+					<Route path={ACCOUNTS_GOOD_ROUTE} element={<AccountsTable />} />
+					<Route path={ACCOUNTS_BAD_ROUTE} element={<AccountsTable />} />
+					<Route path={ACCOUNTS_SMS_ROUTE} element={<AccountsTable />} />
+					<Route path={ACCOUNTS_2FA_ROUTE} element={<AccountsTable />} />
 					<Route path="*" element={<Navigate to={ACCOUNTS_ROUTE} />} />
 				</Route>
 				<Route path={PROXY_ROUTE} element={<ProxyPage />}>

@@ -18,12 +18,10 @@ import {
 const ProxyTable = observer(() => {
 	const location = useLocation();
 	const lastElement = useRef(null);
-	const {isLoading, proxies, page, totalPageCount, limit, inAction} = Proxies;
+	const {isLoading, proxies, page, hasMore, limit, inAction} = Proxies;
 
 	const copyModal = useRef(null);
 	const {handleClick, isCopied, setIsCopied} = useCopyModal(copyModal);
-
-	const hasMore = page < totalPageCount;
 
 	const fetchMore = useCallback(() => {
 		switch (location.pathname) {
@@ -98,8 +96,9 @@ const ProxyTable = observer(() => {
 					))}
 				</TableBody>
 			</Table>
-			<div ref={lastElement} />
+			{proxies.length === 0 && !isLoading && "Table is empty."}
 			{isLoading && "Loading..."}
+			<div ref={lastElement} />
 		</>
 	);
 });
