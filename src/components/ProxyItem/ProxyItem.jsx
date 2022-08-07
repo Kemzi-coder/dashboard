@@ -2,6 +2,7 @@ import classNames from "classnames";
 import PropTypes from "prop-types";
 import React, {useState} from "react";
 import {useForm} from "react-hook-form";
+import formatDate from "../../utils/helpers/formatDate";
 
 const ProxyItem = ({
 	status,
@@ -22,6 +23,7 @@ const ProxyItem = ({
 	} = useForm();
 
 	const [isEditable, setIsEditable] = useState(false);
+	const formattedDate = formatDate(new Date(checkedAt));
 	const fallbackStr = "–";
 	const statusClassConditions = {
 		"text-danger": status === "bad",
@@ -37,20 +39,6 @@ const ProxyItem = ({
 		}
 		setIsEditable(false);
 	};
-
-	// todo: Move this code to helpers!
-	const padTo2Digits = num => num.toString().padStart(2, "0");
-
-	const formatDate = date =>
-		[
-			padTo2Digits(date.getMonth() + 1),
-			padTo2Digits(date.getDate()),
-			date.getFullYear()
-		].join("/");
-
-	const formatDate2 = date =>
-		[date.getHours(), date.getMinutes(), date.getSeconds()].join(":");
-	//
 
 	return (
 		<tr className="border rounded-2xl border-primaryLighter">
@@ -96,9 +84,7 @@ const ProxyItem = ({
 				onClick={onClick}
 				className="py-3 px-3 text-ellipsis overflow-hidden cursor-pointer whitespace-nowrap"
 			>
-				{`${formatDate(new Date(checkedAt))} ${formatDate2(
-					new Date(checkedAt)
-				)}` || fallbackStr}
+				{formattedDate || fallbackStr}
 			</td>
 			<td
 				role="presentation"
