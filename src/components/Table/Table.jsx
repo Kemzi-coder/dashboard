@@ -3,9 +3,16 @@ import PropTypes from "prop-types";
 import classNames from "classnames";
 
 const Table = ({children, className}) => (
-	<table className={classNames(className, "table-fixed w-full")}>
-		{children}
-	</table>
+	<div className="overflow-x-auto">
+		<table
+			className={classNames(
+				className,
+				"table-fixed whitespace-nowrap min-w-full"
+			)}
+		>
+			{children}
+		</table>
+	</div>
 );
 
 Table.propTypes = {
