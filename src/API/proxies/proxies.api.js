@@ -14,11 +14,15 @@ class ProxiesAPI {
 	}
 
 	static edit(uuid, proxy) {
-		return $api.post("proxy/edit_proxy", {proxy_uuid: uuid, ...proxy});
+		return $api.post("proxy/edit_proxy", {
+			proxy_uuid: uuid,
+			table: true,
+			...proxy
+		});
 	}
 
 	static create(proxy) {
-		return $api.post("proxy/add_proxy", proxy);
+		return $api.post("proxy/add_proxy", {table: true, ...proxy});
 	}
 }
 

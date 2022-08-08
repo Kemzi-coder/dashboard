@@ -4,11 +4,9 @@ import classNames from "classnames";
 
 const TableCell = ({children, className, ...props}) => (
 	<td
-		className={classNames(
-			className,
-			"py-3 px-3 text-ellipsis overflow-hidden whitespace-nowrap",
-			{"cursor-pointer": !!props.onClick}
-		)}
+		className={classNames(className, "px-4 py-3", {
+			"cursor-pointer": !!props.onClick
+		})}
 		{...props}
 	>
 		{children}

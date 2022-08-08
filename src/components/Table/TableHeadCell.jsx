@@ -2,8 +2,13 @@ import React from "react";
 import PropTypes from "prop-types";
 import classNames from "classnames";
 
-const TableHeadCell = ({children, className}) => (
-	<th className={classNames(className, "font-normal p-3")}>{children}</th>
+const TableHeadCell = ({children, className, ...props}) => (
+	<th
+		className={classNames(className, "font-normal px-4 py-3 capitalize")}
+		{...props}
+	>
+		{children}
+	</th>
 );
 
 TableHeadCell.propTypes = {

@@ -7,6 +7,8 @@ class Proxies {
 
 	isLoading = false;
 
+	headCells = [];
+
 	page = 1;
 
 	limit = 2;
@@ -62,6 +64,10 @@ class Proxies {
 		this.hasMore = hasMore;
 	}
 
+	setHeadCells(headCells) {
+		this.headCells = headCells;
+	}
+
 	async delete(uuid) {
 		this.setInAction(true);
 		try {
@@ -112,8 +118,9 @@ class Proxies {
 
 			this.setHasMore(getHasMore(page, totalPageCount));
 
-			this.setProxies(response.data.result.proxy);
+			this.setProxies(response.data.result.proxy.proxy);
 			this.setPage(response.data.result.page);
+			this.setHeadCells(response.data.result.proxy.table_names);
 		} catch (e) {
 			console.log(e);
 		} finally {
@@ -131,7 +138,7 @@ class Proxies {
 
 			this.setHasMore(getHasMore(page, totalPageCount));
 
-			this.addProxies(response.data.result.proxy);
+			this.addProxies(response.data.result.proxy.proxy);
 			this.setPage(response.data.result.page);
 		} catch (e) {
 			console.log(e);
@@ -151,8 +158,9 @@ class Proxies {
 
 			this.setHasMore(getHasMore(page, totalPageCount));
 
-			this.setProxies(response.data.result.proxy);
+			this.setProxies(response.data.result.proxy.proxy);
 			this.setPage(response.data.result.page);
+			this.setHeadCells(response.data.result.proxy.table_names);
 		} catch (e) {
 			console.log(e);
 		} finally {
@@ -170,7 +178,7 @@ class Proxies {
 
 			this.setHasMore(getHasMore(page, totalPageCount));
 
-			this.addProxies(response.data.result.proxy);
+			this.addProxies(response.data.result.proxy.proxy);
 			this.setPage(response.data.result.page);
 		} catch (e) {
 			console.log(e);
