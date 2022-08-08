@@ -15,7 +15,11 @@ import {
 	PROXY_ROUTE,
 	PROXY_SHARED_ROUTE,
 	PROXY_PRIVATE_ROUTE,
-	PROXY_CREATE_ROUTE
+	PROXY_CREATE_ROUTE,
+	APPS_ROUTE,
+	APPS_SHARED_ROUTE,
+	APPS_PRIVATE_ROUTE,
+	APPS_CREATE_ROUTE
 } from "../../utils/constants/routes";
 import AccountsPage from "../../views/Accounts/AccountsPage/AccountsPage";
 import AccountsTable from "../../views/Accounts/AccountsTable/AccountsTable";
@@ -25,6 +29,9 @@ import HomeStats from "../../views/Home/HomeStats/HomeStats";
 import ProxyPage from "../../views/Proxy/ProxyPage/ProxyPage";
 import ProxyTable from "../../views/Proxy/ProxyTable/ProxyTable";
 import ProxyCreateForm from "../../views/Proxy/ProxyCreateForm/ProxyCreateForm";
+import AppsPage from "../../views/Apps/AppsPage/AppsPage";
+import AppsTable from "../../views/Apps/AppsTable/AppsTable";
+import AppsCreateForm from "../../views/Apps/AppsCreateForm/AppsCreateForm";
 
 const AppRouter = observer(() => {
 	const {isAuth} = Auth;
@@ -54,6 +61,13 @@ const AppRouter = observer(() => {
 					<Route path={PROXY_PRIVATE_ROUTE} element={<ProxyTable />} />
 					<Route path={PROXY_CREATE_ROUTE} element={<ProxyCreateForm />} />
 					<Route path="*" element={<Navigate to={PROXY_SHARED_ROUTE} />} />
+				</Route>
+				<Route path={APPS_ROUTE} element={<AppsPage />}>
+					<Route index element={<Navigate to={APPS_SHARED_ROUTE} replace />} />
+					<Route path={APPS_SHARED_ROUTE} element={<AppsTable />} />
+					<Route path={APPS_PRIVATE_ROUTE} element={<AppsTable />} />
+					<Route path={APPS_CREATE_ROUTE} element={<AppsCreateForm />} />
+					<Route path="*" element={<Navigate to={APPS_SHARED_ROUTE} />} />
 				</Route>
 				<Route path="*" element={<Navigate to={HOME_STATISTICS_ROUTE} />} />
 			</Routes>

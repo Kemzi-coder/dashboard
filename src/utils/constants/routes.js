@@ -20,6 +20,14 @@ export const PROXY_PRIVATE_ROUTE = "/proxy/private";
 
 export const PROXY_CREATE_ROUTE = "/proxy/create";
 
+export const APPS_ROUTE = "/apps";
+
+export const APPS_SHARED_ROUTE = "/apps/shared";
+
+export const APPS_PRIVATE_ROUTE = "/apps/private";
+
+export const APPS_CREATE_ROUTE = "/apps/create";
+
 export const PARSING_ROUTE = "/parsing";
 
 export const SETTINGS_ROUTE = "/settings";
