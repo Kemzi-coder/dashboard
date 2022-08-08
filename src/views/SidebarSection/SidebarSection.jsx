@@ -1,5 +1,7 @@
 import React from "react";
+import {FaNetworkWired} from "react-icons/fa";
 import {
+	MdApps,
 	MdGroups,
 	MdHome,
 	MdMail,
@@ -7,11 +9,11 @@ import {
 	MdPerson,
 	MdSettings
 } from "react-icons/md";
-import {FaNetworkWired} from "react-icons/fa";
 import Navbar from "../../components/Navbar/Navbar";
 import NavbarItem from "../../components/NavbarItem/NavbarItem";
 import {
 	ACCOUNTS_ROUTE,
+	APPS_ROUTE,
 	HOME_ROUTE,
 	MAILING_ROUTE,
 	PARSING_ROUTE,
@@ -52,6 +54,9 @@ const SidebarSection = () => (
 					text="Proxy"
 					path={PROXY_ROUTE}
 				/>
+			</li>
+			<li>
+				<NavbarItem startIcon={MdApps} text="Apps" path={APPS_ROUTE} />
 			</li>
 			<li>
 				<NavbarItem
