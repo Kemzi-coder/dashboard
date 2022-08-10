@@ -1,58 +1,32 @@
 import {observer} from "mobx-react-lite";
-import React, {useCallback, useEffect, useRef} from "react";
-import {useLocation} from "react-router-dom";
-import CopyModal from "../../../components/CopyModal/CopyModal";
-import InfiniteScrollList from "../../../components/InfiniteScrollList/InfiniteScrollList";
-import ProxyItem from "../../../components/ProxyItem/ProxyItem";
-import {
-	Table,
-	TableBody,
-	TableHead,
-	TableHeadCell,
-	TableRow
-} from "../../../components/Table";
-import useCopyModal from "../../../hooks/useCopyModal.hook";
+import React, {useEffect, useMemo} from "react";
+import ItemsTable from "../../../components/ItemsTable/ItemsTable";
+import useFetchFns from "../../../hooks/useFetchFns.hook";
 import Apps from "../../../store/apps";
-import {APPS_PRIVATE_ROUTE} from "../../../utils/constants/routes";
+import {
+	APPS_PRIVATE_ROUTE,
+	APPS_SHARED_ROUTE
+} from "../../../utils/constants/routes";
 
 const AppsTable = observer(() => {
-	const location = useLocation();
 	const {isLoading, apps, page, hasMore, limit, inAction, headCells} = Apps;
+	const params = useMemo(
+		() => ({
+			page: 1,
+			per_page: limit,
+			table: true
+		}),
+		[limit]
+	);
 
-	const copyModal = useRef(null);
-	const {handleClick, isCopied, setIsCopied} = useCopyModal(copyModal);
-
-	const fetchMore = useCallback(() => {
-		switch (location.pathname) {
-			case APPS_PRIVATE_ROUTE:
-				Apps.fetchMorePrivate({
-					page: page + 1,
-					per_page: limit,
-					table: true
-				});
-				break;
-			default:
-				Apps.fetchMoreShared({
-					page: page + 1,
-					per_page: limit,
-					table: true
-				});
-		}
-	}, [limit, location.pathname, page]);
+	const [fetchApps, fetchMoreApps] = useFetchFns({
+		[APPS_PRIVATE_ROUTE]: [Apps.fetchPrivate, Apps.fetchMorePrivate],
+		[APPS_SHARED_ROUTE]: [Apps.fetchShared, Apps.fetchMoreShared]
+	});
 
 	useEffect(() => {
-		switch (location.pathname) {
-			case APPS_PRIVATE_ROUTE:
-				Apps.fetchPrivate({
-					page: 1,
-					per_page: limit,
-					table: true
-				});
-				break;
-			default:
-				Apps.fetchShared({page: 1, per_page: limit, table: true});
-		}
-	}, [limit, location.pathname]);
+		fetchApps(params);
+	}, [fetchApps, params]);
 
 	useEffect(() => () => Apps.setApps([]), []);
 
@@ -60,46 +34,19 @@ const AppsTable = observer(() => {
 		await Apps.delete(uuid);
 	};
 
-	const handleSave = uuid => async proxy => Apps.edit(uuid, proxy);
+	const handleEdit = uuid => async proxy => Apps.edit(uuid, proxy);
 
 	return (
-		<InfiniteScrollList
+		<ItemsTable
+			fetchMore={() => fetchMoreApps({...params, page: page + 1})}
 			hasMore={hasMore}
+			headCells={headCells}
+			inAction={inAction}
 			isLoading={isLoading}
-			length={apps.length}
-			onFetchMore={fetchMore}
-		>
-			<CopyModal
-				ref={copyModal}
-				isCopied={isCopied}
-				setIsCopied={setIsCopied}
-			/>
-			<Table>
-				<TableHead>
-					<TableRow>
-						<TableHeadCell>No.</TableHeadCell>
-						<TableHeadCell>Actions</TableHeadCell>
-						{headCells.map(cell => (
-							<TableHeadCell key={cell}>{cell.toLowerCase()}</TableHeadCell>
-						))}
-					</TableRow>
-				</TableHead>
-				<TableBody>
-					{apps.map((proxy, index) => (
-						<ProxyItem
-							key={proxy.uuid}
-							onSave={handleSave(proxy.uuid)}
-							isActionsAllowed={proxy.edit_allowed}
-							onDelete={() => handleDelete(proxy.uuid)}
-							number={index + 1}
-							onClick={handleClick}
-							isLoading={inAction}
-							values={proxy.values}
-						/>
-					))}
-				</TableBody>
-			</Table>
-		</InfiniteScrollList>
+			items={apps}
+			onDelete={handleDelete}
+			onEdit={handleEdit}
+		/>
 	);
 });
 

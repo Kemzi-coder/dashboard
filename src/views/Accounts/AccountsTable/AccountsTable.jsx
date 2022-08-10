@@ -1,8 +1,9 @@
-import React, {useCallback, useEffect, useRef} from "react";
-import {useLocation} from "react-router-dom";
 import {observer} from "mobx-react-lite";
+import React, {useCallback, useEffect, useMemo, useRef} from "react";
+import {useLocation} from "react-router-dom";
 import AccountItem from "../../../components/AccountItem/AccountItem";
 import CopyModal from "../../../components/CopyModal/CopyModal";
+import InfiniteScrollList from "../../../components/InfiniteScrollList/InfiniteScrollList";
 import {
 	Table,
 	TableBody,
@@ -11,7 +12,6 @@ import {
 	TableRow
 } from "../../../components/Table";
 import useCopyModal from "../../../hooks/useCopyModal.hook";
-import useObserver from "../../../hooks/useObserver.hook";
 import Accounts from "../../../store/accounts";
 import Stats from "../../../store/stats";
 import {
@@ -23,30 +23,38 @@ import {
 
 const AccountsTable = observer(() => {
 	const location = useLocation();
-	const lastElement = useRef(null);
 	const {isLoading, accounts, page, hasMore, limit} = Accounts;
 
 	const copyModal = useRef(null);
 	const {handleClick, isCopied, setIsCopied} = useCopyModal(copyModal);
 
+	const generalParams = useMemo(() => ({page: 1, per_page: limit}), [limit]);
+
+	const getParamsByStatus = useCallback(
+		(params, status) => ({...params, status}),
+		[]
+	);
+
 	const fetchMore = useCallback(() => {
+		const fetchMoreParams = {...generalParams, page: page + 1};
+
 		switch (location.pathname) {
 			case ACCOUNTS_GOOD_ROUTE:
-				Accounts.fetchMore({page: page + 1, per_page: limit, status: "good"});
+				Accounts.fetchMore(getParamsByStatus(fetchMoreParams, "good"));
 				break;
 			case ACCOUNTS_BAD_ROUTE:
-				Accounts.fetchMore({page: page + 1, per_page: limit, status: "bad"});
+				Accounts.fetchMore(getParamsByStatus(fetchMoreParams, "bad"));
 				break;
 			case ACCOUNTS_2FA_ROUTE:
-				Accounts.fetchMore({page: page + 1, per_page: limit, status: "2fa"});
+				Accounts.fetchMore(getParamsByStatus(fetchMoreParams, "2fa"));
 				break;
 			case ACCOUNTS_SMS_ROUTE:
-				Accounts.fetchMore({page: page + 1, per_page: limit, status: "sms"});
+				Accounts.fetchMore(getParamsByStatus(fetchMoreParams, "sms"));
 				break;
 			default:
-				Accounts.fetchMore({page: page + 1, per_page: limit});
+				Accounts.fetchMore(fetchMoreParams);
 		}
-	}, [limit, location.pathname, page]);
+	}, [generalParams, getParamsByStatus, location.pathname, page]);
 
 	useEffect(() => {
 		Stats.fetchAll();
@@ -55,28 +63,31 @@ const AccountsTable = observer(() => {
 	useEffect(() => {
 		switch (location.pathname) {
 			case ACCOUNTS_GOOD_ROUTE:
-				Accounts.fetchAll({page: 1, per_page: limit, status: "good"});
+				Accounts.fetchAll(getParamsByStatus(generalParams, "good"));
 				break;
 			case ACCOUNTS_BAD_ROUTE:
-				Accounts.fetchAll({page: 1, per_page: limit, status: "bad"});
+				Accounts.fetchAll(getParamsByStatus(generalParams, "bad"));
 				break;
 			case ACCOUNTS_2FA_ROUTE:
-				Accounts.fetchAll({page: 1, per_page: limit, status: "2fa"});
+				Accounts.fetchAll(getParamsByStatus(generalParams, "2fa"));
 				break;
 			case ACCOUNTS_SMS_ROUTE:
-				Accounts.fetchAll({page: 1, per_page: limit, status: "sms"});
+				Accounts.fetchAll(getParamsByStatus(generalParams, "sms"));
 				break;
 			default:
-				Accounts.fetchAll({page: 1, per_page: limit});
+				Accounts.fetchAll(generalParams);
 		}
-	}, [limit, location.pathname]);
+	}, [generalParams, getParamsByStatus, limit, location.pathname]);
 
 	useEffect(() => () => Accounts.setAccounts([]), []);
 
-	useObserver(lastElement, hasMore, isLoading, fetchMore);
-
 	return (
-		<>
+		<InfiniteScrollList
+			hasMore={hasMore}
+			isLoading={isLoading}
+			length={accounts.length}
+			onFetchMore={fetchMore}
+		>
 			<CopyModal
 				ref={copyModal}
 				isCopied={isCopied}
@@ -111,10 +122,7 @@ const AccountsTable = observer(() => {
 					))}
 				</TableBody>
 			</Table>
-			{accounts.length === 0 && !isLoading && "Table is empty."}
-			{isLoading && "Loading..."}
-			<div ref={lastElement} />
-		</>
+		</InfiniteScrollList>
 	);
 });
 
