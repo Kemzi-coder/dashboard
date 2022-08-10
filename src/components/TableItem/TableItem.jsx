@@ -1,18 +1,18 @@
-import PropTypes from "prop-types";
 import React, {useState} from "react";
 import {useForm} from "react-hook-form";
-import formatDate from "../../utils/helpers/formatDate";
-import {TableCell, TableRow} from "../Table";
+import PropTypes from "prop-types";
+import {TableRow, TableCell} from "../Table";
 import {tableFallbackStr} from "../../utils/constants/fallback";
-import ProxyItemButtons from "./ProxyItemButtons";
 import {getStatusClass} from "../../utils/constants/table";
+import formatDate from "../../utils/helpers/formatDate";
+import TableItemButtons from "./TableItemButtons";
 
-const ProxyItem = ({
+const TableItem = ({
 	number,
 	values,
 	onClick,
 	onDelete,
-	onSave,
+	onEdit,
 	isActionsAllowed,
 	isLoading
 }) => {
@@ -28,7 +28,7 @@ const ProxyItem = ({
 
 	const handleSave = async () => {
 		if (isDirty) {
-			await handleSubmit(onSave)();
+			await handleSubmit(onEdit)();
 		}
 		setIsEditable(false);
 	};
@@ -37,7 +37,7 @@ const ProxyItem = ({
 		<TableRow>
 			<TableCell>{number}</TableCell>
 			{isActionsAllowed ? (
-				<ProxyItemButtons
+				<TableItemButtons
 					isEditable={isEditable}
 					isLoading={isLoading}
 					onDelete={onDelete}
@@ -89,22 +89,22 @@ const ProxyItem = ({
 	);
 };
 
-ProxyItem.propTypes = {
+TableItem.propTypes = {
 	number: PropTypes.number.isRequired,
 	onClick: PropTypes.func,
 	onDelete: PropTypes.func,
 	isActionsAllowed: PropTypes.bool,
-	onSave: PropTypes.func,
+	onEdit: PropTypes.func,
 	isLoading: PropTypes.bool,
 	values: PropTypes.array.isRequired
 };
 
-ProxyItem.defaultProps = {
+TableItem.defaultProps = {
 	onClick: null,
 	onDelete: null,
 	isActionsAllowed: false,
 	isLoading: false,
-	onSave: null
+	onEdit: null
 };
 
-export default ProxyItem;
+export default TableItem;

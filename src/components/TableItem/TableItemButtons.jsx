@@ -2,7 +2,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import {TableCell, TableButton} from "../Table";
 
-const ProxyItemButtons = ({
+const TableItemButtons = ({
 	isEditable,
 	isLoading,
 	onSave,
@@ -35,7 +35,7 @@ const ProxyItemButtons = ({
 	</TableCell>
 );
 
-ProxyItemButtons.propTypes = {
+TableItemButtons.propTypes = {
 	onSave: PropTypes.func.isRequired,
 	onDelete: PropTypes.func.isRequired,
 	isLoading: PropTypes.bool.isRequired,
@@ -43,4 +43,4 @@ ProxyItemButtons.propTypes = {
 	isEditable: PropTypes.bool.isRequired
 };
 
-export default ProxyItemButtons;
+export default TableItemButtons;
