@@ -14,7 +14,7 @@ class Accounts {
 	limit = 2;
 
 	constructor() {
-		makeAutoObservable(this);
+		makeAutoObservable(this, {}, {autoBind: true});
 	}
 
 	setPage(page) {

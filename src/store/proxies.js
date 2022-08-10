@@ -18,7 +18,7 @@ class Proxies {
 	hasMore = false;
 
 	constructor() {
-		makeAutoObservable(this);
+		makeAutoObservable(this, {}, {autoBind: true});
 	}
 
 	setPage(page) {
