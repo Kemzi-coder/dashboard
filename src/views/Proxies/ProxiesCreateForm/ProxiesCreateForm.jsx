@@ -6,7 +6,7 @@ import Proxies from "../../../store/proxies";
 import FormTextField from "../../../components/FormTextField/FormTextField";
 import createFormValidation from "../../../validation/proxies";
 
-const ProxyCreateForm = () => {
+const ProxiesCreateForm = () => {
 	const {
 		handleSubmit,
 		register,
@@ -52,4 +52,4 @@ const ProxyCreateForm = () => {
 	);
 };
 
-export default ProxyCreateForm;
+export default ProxiesCreateForm;

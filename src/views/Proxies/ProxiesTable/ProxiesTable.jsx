@@ -4,11 +4,11 @@ import ItemsTable from "../../../components/ItemsTable/ItemsTable";
 import useFetchFns from "../../../hooks/useFetchFns.hook";
 import Proxies from "../../../store/proxies";
 import {
-	PROXY_PRIVATE_ROUTE,
-	PROXY_SHARED_ROUTE
+	PROXIES_PRIVATE_ROUTE,
+	PROXIES_ROUTE
 } from "../../../utils/constants/routes";
 
-const ProxyTable = observer(() => {
+const ProxiesTable = observer(() => {
 	const {isLoading, proxies, page, hasMore, limit, inAction, headCells} =
 		Proxies;
 	const params = useMemo(
@@ -21,8 +21,8 @@ const ProxyTable = observer(() => {
 	);
 
 	const [fetchProxies, fetchMoreProxies] = useFetchFns({
-		[PROXY_PRIVATE_ROUTE]: [Proxies.fetchPrivate, Proxies.fetchMorePrivate],
-		[PROXY_SHARED_ROUTE]: [Proxies.fetchShared, Proxies.fetchMoreShared]
+		[PROXIES_PRIVATE_ROUTE]: [Proxies.fetchPrivate, Proxies.fetchMorePrivate],
+		[PROXIES_ROUTE]: [Proxies.fetchShared, Proxies.fetchMoreShared]
 	});
 
 	useEffect(() => {
@@ -49,4 +49,4 @@ const ProxyTable = observer(() => {
 	);
 });
 
-export default ProxyTable;
+export default ProxiesTable;
