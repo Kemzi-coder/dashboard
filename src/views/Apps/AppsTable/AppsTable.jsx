@@ -3,10 +3,7 @@ import React, {useEffect, useMemo} from "react";
 import ItemsTable from "../../../components/ItemsTable/ItemsTable";
 import useFetchFns from "../../../hooks/useFetchFns.hook";
 import Apps from "../../../store/apps";
-import {
-	APPS_PRIVATE_ROUTE,
-	APPS_SHARED_ROUTE
-} from "../../../utils/constants/routes";
+import {APPS_PRIVATE_ROUTE, APPS_ROUTE} from "../../../utils/constants/routes";
 
 const AppsTable = observer(() => {
 	const {isLoading, apps, page, hasMore, limit, inAction, headCells} = Apps;
@@ -21,7 +18,7 @@ const AppsTable = observer(() => {
 
 	const [fetchApps, fetchMoreApps] = useFetchFns({
 		[APPS_PRIVATE_ROUTE]: [Apps.fetchPrivate, Apps.fetchMorePrivate],
-		[APPS_SHARED_ROUTE]: [Apps.fetchShared, Apps.fetchMoreShared]
+		[APPS_ROUTE]: [Apps.fetchShared, Apps.fetchMoreShared]
 	});
 
 	useEffect(() => {

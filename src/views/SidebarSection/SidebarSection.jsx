@@ -18,7 +18,7 @@ import {
 	MAILING_ROUTE,
 	PARSING_ROUTE,
 	PROFILE_ROUTE,
-	PROXY_ROUTE,
+	PROXIES_ROUTE,
 	SETTINGS_ROUTE
 } from "../../utils/constants/routes";
 
@@ -51,8 +51,8 @@ const SidebarSection = () => (
 			<li>
 				<NavbarItem
 					startIcon={FaNetworkWired}
-					text="Proxy"
-					path={PROXY_ROUTE}
+					text="Proxies"
+					path={PROXIES_ROUTE}
 				/>
 			</li>
 			<li>
