@@ -1,7 +1,7 @@
 import React, {useState} from "react";
 import {useForm} from "react-hook-form";
 import PropTypes from "prop-types";
-import {TableRow, TableCell} from "../Table";
+import {TableCell, TableRow} from "../Table";
 import {tableFallbackStr} from "../../utils/constants/fallback";
 import {getStatusClass} from "../../utils/constants/table";
 import formatDate from "../../utils/helpers/formatDate";
@@ -64,6 +64,7 @@ const TableItem = ({
 							role="presentation"
 							onClick={onClick}
 							className={classes}
+							key={name}
 						>
 							{isEditable ? (
 								<input
@@ -80,7 +81,12 @@ const TableItem = ({
 				}
 
 				return (
-					<TableCell role="presentation" onClick={onClick} className={classes}>
+					<TableCell
+						key={name}
+						role="presentation"
+						onClick={onClick}
+						className={classes}
+					>
 						{value || tableFallbackStr}
 					</TableCell>
 				);

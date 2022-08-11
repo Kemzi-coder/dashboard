@@ -65,8 +65,9 @@ class Accounts {
 
 			this.setHasMore(getHasMore(page, totalPageCount));
 
-			this.setAccounts(response.data.result.accounts);
+			this.setAccounts(response.data.result.accounts.accounts);
 			this.setPage(response.data.result.page);
+			this.setHeadCells(response.data.result.accounts.table_names);
 		} catch (e) {
 			console.log(e);
 		} finally {
@@ -84,7 +85,7 @@ class Accounts {
 
 			this.setHasMore(getHasMore(page, totalPageCount));
 
-			this.addAccounts(response.data.result.accounts);
+			this.addAccounts(response.data.result.accounts.accounts);
 			this.setPage(response.data.result.page);
 		} catch (e) {
 			console.log(e);

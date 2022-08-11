@@ -1,17 +1,6 @@
 import {observer} from "mobx-react-lite";
-import React, {useCallback, useEffect, useMemo, useRef} from "react";
+import React, {useCallback, useEffect, useMemo, useState} from "react";
 import {useLocation} from "react-router-dom";
-import AccountItem from "../../../components/AccountItem/AccountItem";
-import CopyModal from "../../../components/CopyModal/CopyModal";
-import InfiniteScrollList from "../../../components/InfiniteScrollList/InfiniteScrollList";
-import {
-	Table,
-	TableBody,
-	TableHead,
-	TableHeadCell,
-	TableRow
-} from "../../../components/Table";
-import useCopyModal from "../../../hooks/useCopyModal.hook";
 import Accounts from "../../../store/accounts";
 import Stats from "../../../store/stats";
 import {
@@ -20,109 +9,68 @@ import {
 	ACCOUNTS_GOOD_ROUTE,
 	ACCOUNTS_SMS_ROUTE
 } from "../../../utils/constants/routes";
+import ItemsTable from "../../../components/ItemsTable/ItemsTable";
 
 const AccountsTable = observer(() => {
 	const location = useLocation();
-	const {isLoading, accounts, page, hasMore, limit} = Accounts;
+	const [status, setStatus] = useState("");
+	const {isLoading, accounts, page, hasMore, limit, headCells, inAction} =
+		Accounts;
 
-	const copyModal = useRef(null);
-	const {handleClick, isCopied, setIsCopied} = useCopyModal(copyModal);
-
-	const generalParams = useMemo(() => ({page: 1, per_page: limit}), [limit]);
-
-	const getParamsByStatus = useCallback(
-		(params, status) => ({...params, status}),
-		[]
+	const params = useMemo(
+		() => ({page: 1, per_page: limit, table: true, status}),
+		[limit, status]
 	);
-
-	const fetchMore = useCallback(() => {
-		const fetchMoreParams = {...generalParams, page: page + 1};
-
-		switch (location.pathname) {
-			case ACCOUNTS_GOOD_ROUTE:
-				Accounts.fetchMore(getParamsByStatus(fetchMoreParams, "good"));
-				break;
-			case ACCOUNTS_BAD_ROUTE:
-				Accounts.fetchMore(getParamsByStatus(fetchMoreParams, "bad"));
-				break;
-			case ACCOUNTS_2FA_ROUTE:
-				Accounts.fetchMore(getParamsByStatus(fetchMoreParams, "2fa"));
-				break;
-			case ACCOUNTS_SMS_ROUTE:
-				Accounts.fetchMore(getParamsByStatus(fetchMoreParams, "sms"));
-				break;
-			default:
-				Accounts.fetchMore(fetchMoreParams);
-		}
-	}, [generalParams, getParamsByStatus, location.pathname, page]);
 
 	useEffect(() => {
 		Stats.fetchAll();
 	}, []);
 
 	useEffect(() => {
+		Accounts.fetchAll(params);
+	}, [params, status]);
+
+	useEffect(() => {
 		switch (location.pathname) {
 			case ACCOUNTS_GOOD_ROUTE:
-				Accounts.fetchAll(getParamsByStatus(generalParams, "good"));
+				setStatus("good");
 				break;
 			case ACCOUNTS_BAD_ROUTE:
-				Accounts.fetchAll(getParamsByStatus(generalParams, "bad"));
+				setStatus("bad");
 				break;
 			case ACCOUNTS_2FA_ROUTE:
-				Accounts.fetchAll(getParamsByStatus(generalParams, "2fa"));
+				setStatus("2fa");
 				break;
 			case ACCOUNTS_SMS_ROUTE:
-				Accounts.fetchAll(getParamsByStatus(generalParams, "sms"));
+				setStatus("sms");
 				break;
 			default:
-				Accounts.fetchAll(generalParams);
+				setStatus("");
 		}
-	}, [generalParams, getParamsByStatus, limit, location.pathname]);
+	}, [location.pathname]);
+
+	const fetchMore = useCallback(
+		() => Accounts.fetchMore({...params, page: page + 1}),
+		[params, page]
+	);
 
 	useEffect(() => () => Accounts.setAccounts([]), []);
 
+	const handleEdit = () => console.log("Edit");
+
+	const handleDelete = () => console.log("Delete");
+
 	return (
-		<InfiniteScrollList
-			hasMore={hasMore}
+		<ItemsTable
 			isLoading={isLoading}
-			length={accounts.length}
-			onFetchMore={fetchMore}
-		>
-			<CopyModal
-				ref={copyModal}
-				isCopied={isCopied}
-				setIsCopied={setIsCopied}
-			/>
-			<Table>
-				<TableHead>
-					<TableRow>
-						<TableHeadCell className="w-1/12">No.</TableHeadCell>
-						<TableHeadCell>Status</TableHeadCell>
-						<TableHeadCell>Photo</TableHeadCell>
-						<TableHeadCell>Name</TableHeadCell>
-						<TableHeadCell>Username</TableHeadCell>
-						<TableHeadCell>Phone</TableHeadCell>
-						<TableHeadCell>UUID</TableHeadCell>
-					</TableRow>
-				</TableHead>
-				<TableBody>
-					{accounts.map((account, index) => (
-						<AccountItem
-							onClick={handleClick}
-							key={account.uuid}
-							firstName={account?.profile?.first_name}
-							lastName={account?.profile?.last_name}
-							number={index + 1}
-							phone={account?.profile?.phone}
-							photo={account?.profile?.photo}
-							status={account.status}
-							username={account?.profile?.username}
-							uuid={account.uuid}
-						/>
-					))}
-				</TableBody>
-			</Table>
-		</InfiniteScrollList>
+			onEdit={handleEdit}
+			onDelete={handleDelete}
+			fetchMore={fetchMore}
+			headCells={headCells}
+			inAction={inAction}
+			hasMore={hasMore}
+			items={accounts}
+		/>
 	);
 });
 

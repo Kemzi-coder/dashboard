@@ -37,7 +37,7 @@ const ItemsTable = ({
 						<TableHeadCell>No.</TableHeadCell>
 						<TableHeadCell>Actions</TableHeadCell>
 						{headCells.map(cell => (
-							<TableHeadCell ket={cell}>{cell.toLowerCase()}</TableHeadCell>
+							<TableHeadCell key={cell}>{cell.toLowerCase()}</TableHeadCell>
 						))}
 					</TableRow>
 				</TableHead>
@@ -45,7 +45,7 @@ const ItemsTable = ({
 					{items.map((item, index) => (
 						<TableItem
 							key={item.uuid}
-							onSave={onEdit(item.uuid)}
+							onSave={() => onEdit(item.uuid)}
 							isActionsAllowed={item.edit_allowed}
 							onDelete={() => onDelete(item.uuid)}
 							number={index + 1}
