@@ -7,7 +7,7 @@ import FormFields from "../../../components/FormFields/FormFields";
 import FormTextField from "../../../components/FormTextField/FormTextField";
 import Button from "../../../components/Button/Button";
 import Auth from "../../../store/auth";
-import {authFormValidation} from "../../../validation";
+import authFormValidation from "../../../validation/auth";
 
 const AuthRegisterForm = () => {
 	const navigate = useNavigate();

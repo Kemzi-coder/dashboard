@@ -7,9 +7,13 @@ class Accounts {
 
 	isLoading = false;
 
+	headCells = [];
+
 	page = 1;
 
 	hasMore = false;
+
+	inAction = false;
 
 	limit = 2;
 
@@ -40,6 +44,14 @@ class Accounts {
 
 	setHasMore(hasMore) {
 		this.hasMore = hasMore;
+	}
+
+	setHeadCells(headCells) {
+		this.headCells = headCells;
+	}
+
+	setInAction(inAction) {
+		this.inAction = inAction;
 	}
 
 	async fetchAll(params) {

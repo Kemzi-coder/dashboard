@@ -7,7 +7,7 @@ import FormTextField from "../../../components/FormTextField/FormTextField";
 import FormFields from "../../../components/FormFields/FormFields";
 import {REGISTER_ROUTE} from "../../../utils/constants/routes";
 import Auth from "../../../store/auth";
-import {authFormValidation} from "../../../validation";
+import authFormValidation from "../../../validation/auth";
 
 const AuthLoginForm = () => {
 	const {
