@@ -19,6 +19,17 @@ class AuthAPI {
 	static check() {
 		return $api.get("service/check_session");
 	}
+
+	static changePassword(oldPass, newPass) {
+		return $api.post("service/change_password", {
+			old_password: oldPass,
+			new_password: newPass
+		});
+	}
+
+	static changeUsername(username) {
+		return $api.post("service/change_username", {username});
+	}
 }
 
 export default AuthAPI;
