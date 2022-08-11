@@ -61,6 +61,32 @@ class Auth {
 			this.setIsLoading(false);
 		}
 	}
+
+	// eslint-disable-next-line class-methods-use-this
+	async changePassword(oldPass, newPass, setError) {
+		try {
+			const response = await AuthAPI.changePassword(oldPass, newPass);
+			console.log(response);
+		} catch (e) {
+			setError("old_password", {
+				message: e.response.data.error.message
+			});
+			console.log(e);
+		}
+	}
+
+	// eslint-disable-next-line class-methods-use-this
+	async changeUsername(username, setError) {
+		try {
+			const response = await AuthAPI.changeUsername(username);
+			console.log(response);
+		} catch (e) {
+			setError("username", {
+				message: e.response.data.error.message
+			});
+			console.log(e);
+		}
+	}
 }
 
 export default new Auth();
