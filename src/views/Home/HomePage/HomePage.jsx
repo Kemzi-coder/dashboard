@@ -3,6 +3,7 @@ import {Outlet} from "react-router-dom";
 import MainLayout from "../../../components/MainLayout/MainLayout";
 import MainBody from "../../../components/MainBody/MainBody";
 import Stats from "../../../store/stats";
+import MainTopbar from "../../../components/MainTopbar/MainTopbar";
 
 const HomePage = () => {
 	useEffect(() => {
@@ -11,7 +12,7 @@ const HomePage = () => {
 
 	return (
 		<MainLayout>
-			<div className="bg-primary px-16 space-x-8" />
+			<MainTopbar />
 			<MainBody>
 				<Outlet />
 			</MainBody>
