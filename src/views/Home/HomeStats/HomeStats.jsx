@@ -57,6 +57,7 @@ const HomeStats = observer(() => {
 					>
 						{statKeys.map(key => (
 							<div
+								key={key}
 								className="flex-shrink-0"
 								style={{
 									padding: `0 ${spaceBetween / 2}px`,
@@ -65,7 +66,6 @@ const HomeStats = observer(() => {
 							>
 								<StatItem
 									className="px-0 w-full"
-									key={key}
 									value={stats[key]}
 									title={`${key} Accounts`}
 								/>

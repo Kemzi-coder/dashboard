@@ -101,7 +101,7 @@ class Apps {
 		try {
 			const response = await AppsAPI.create(app);
 			console.log(response);
-			this.createApp(response.data.result.proxy.proxy);
+			this.createApp(response.data.result.app.app);
 		} catch (e) {
 			console.log(e);
 		}
