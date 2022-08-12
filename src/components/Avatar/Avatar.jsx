@@ -5,7 +5,9 @@ import FallbackAvatar from "../FallbackAvatar/FallbackAvatar";
 
 const Avatar = ({imagePath, width, height, className}) => {
 	if (!imagePath) {
-		return <FallbackAvatar className={className} />;
+		return (
+			<FallbackAvatar width={width} height={height} className={className} />
+		);
 	}
 
 	return (

@@ -1,5 +1,6 @@
 import {makeAutoObservable} from "mobx";
 import AuthAPI from "../API/auth/auth.api";
+import FilesAPI from "../API/files/files.api";
 
 class Auth {
 	user = {};
@@ -84,6 +85,16 @@ class Auth {
 			setError("username", {
 				message: e.response.data.error.message
 			});
+			console.log(e);
+		}
+	}
+
+	async uploadAvatar(file) {
+		try {
+			const response = await FilesAPI.uploadAvatar(file);
+			console.log(response);
+			this.setUser(response.data.result.user);
+		} catch (e) {
 			console.log(e);
 		}
 	}
