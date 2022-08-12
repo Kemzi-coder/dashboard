@@ -1,16 +1,26 @@
 import React from "react";
 import PropTypes from "prop-types";
 import classNames from "classnames";
+import FallbackAvatar from "../FallbackAvatar/FallbackAvatar";
 
-const Avatar = ({imagePath, width, height, className}) => (
-	<img
-		className={classNames(className, "rounded-full object-cover block")}
-		width={width}
-		height={height}
-		src={imagePath}
-		alt="avatar"
-	/>
-);
+const Avatar = ({imagePath, width, height, className}) => {
+	if (!imagePath) {
+		return <FallbackAvatar className={className} />;
+	}
+
+	return (
+		<img
+			className={classNames(
+				className,
+				"rounded-full object-cover block border border-primaryLighter"
+			)}
+			width={width}
+			height={height}
+			src={imagePath}
+			alt="avatar"
+		/>
+	);
+};
 
 Avatar.propTypes = {
 	width: PropTypes.number,
