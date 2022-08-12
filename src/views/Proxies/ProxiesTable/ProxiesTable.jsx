@@ -35,6 +35,8 @@ const ProxiesTable = observer(() => {
 
 	const handleEdit = uuid => async proxy => Proxies.edit(uuid, proxy);
 
+	const handleCheck = async uuid => Proxies.check(uuid);
+
 	return (
 		<ItemsTable
 			hasMore={hasMore}
@@ -42,6 +44,7 @@ const ProxiesTable = observer(() => {
 			inAction={inAction}
 			isLoading={isLoading}
 			items={proxies}
+			onCheck={handleCheck}
 			onDelete={handleDelete}
 			onEdit={handleEdit}
 			fetchMore={() => fetchMoreProxies({...params, page: page + 1})}

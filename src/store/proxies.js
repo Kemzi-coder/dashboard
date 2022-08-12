@@ -87,8 +87,8 @@ class Proxies {
 			const response = await ProxiesAPI.edit(uuid, proxy);
 			console.log(response);
 			this.editProxy(
-				response.data.result.proxy?.uuid,
-				response.data.result.proxy
+				response.data.result.proxy.proxy.uuid,
+				response.data.result.proxy.proxy
 			);
 		} catch (e) {
 			console.log(e);
@@ -101,9 +101,25 @@ class Proxies {
 		try {
 			const response = await ProxiesAPI.create(proxy);
 			console.log(response);
-			this.createProxy(response.data.result.proxy);
+			this.createProxy(response.data.result.proxy.proxy);
 		} catch (e) {
 			console.log(e);
+		}
+	}
+
+	async check(uuid) {
+		this.setInAction(true);
+		try {
+			const response = await ProxiesAPI.check(uuid);
+			console.log(response);
+			this.editProxy(
+				response.data.result.proxy.proxy.uuid,
+				response.data.result.proxy.proxy
+			);
+		} catch (e) {
+			console.log(e);
+		} finally {
+			this.setInAction(false);
 		}
 	}
 
