@@ -81,14 +81,14 @@ class Apps {
 		}
 	}
 
-	async edit(uuid, proxy) {
+	async edit(uuid, app) {
 		this.setInAction(true);
 		try {
-			const response = await AppsAPI.edit(uuid, proxy);
+			const response = await AppsAPI.edit(uuid, app);
 			console.log(response);
 			this.editApp(
-				response.data.result.proxy?.uuid,
-				response.data.result.proxy
+				response.data.result.app.app.uuid,
+				response.data.result.app.app
 			);
 		} catch (e) {
 			console.log(e);
@@ -97,11 +97,11 @@ class Apps {
 		}
 	}
 
-	async create(proxy) {
+	async create(app) {
 		try {
-			const response = await AppsAPI.create(proxy);
+			const response = await AppsAPI.create(app);
 			console.log(response);
-			this.createApp(response.data.result.proxy);
+			this.createApp(response.data.result.proxy.proxy);
 		} catch (e) {
 			console.log(e);
 		}
