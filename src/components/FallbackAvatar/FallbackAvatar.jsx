@@ -13,7 +13,7 @@ const FallbackAvatar = ({className, width, height}) => (
 	>
 		<MdPerson
 			className="absolute text-primaryLight top-1/2 left-1/2 -translate-y-1/2 -translate-x-1/2"
-			size={24}
+			size={height / (3 / 2)}
 		/>
 	</div>
 );
