@@ -56,9 +56,9 @@ const AccountsTable = observer(() => {
 
 	useEffect(() => () => Accounts.setAccounts([]), []);
 
-	const handleEdit = () => console.log("Edit");
+	const handleEdit = uuid => async account => Accounts.edit(uuid, account);
 
-	const handleDelete = () => console.log("Delete");
+	const handleDelete = async uuid => Accounts.delete(uuid);
 
 	return (
 		<ItemsTable

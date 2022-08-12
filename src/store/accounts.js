@@ -54,6 +54,45 @@ class Accounts {
 		this.inAction = inAction;
 	}
 
+	deleteAccount(uuid) {
+		this.accounts = this.accounts.filter(account => account.uuid !== uuid);
+	}
+
+	editAccount(uuid, account) {
+		this.accounts = this.accounts.map(item =>
+			item.uuid === uuid ? {...item, ...account} : item
+		);
+	}
+
+	async delete(uuid) {
+		this.setInAction(true);
+		try {
+			const response = await AccountsAPI.delete(uuid);
+			console.log(response);
+			this.deleteAccount(uuid);
+		} catch (e) {
+			console.log(e);
+		} finally {
+			this.setInAction(false);
+		}
+	}
+
+	async edit(uuid, account) {
+		this.setInAction(true);
+		try {
+			const response = await AccountsAPI.edit(uuid, account);
+			console.log(response);
+			this.editAccount(
+				response.data.result.account.account.uuid,
+				response.data.result.account.account
+			);
+		} catch (e) {
+			console.log(e);
+		} finally {
+			this.setInAction(false);
+		}
+	}
+
 	async fetchAll(params) {
 		this.reset();
 		this.setIsLoading(true);
