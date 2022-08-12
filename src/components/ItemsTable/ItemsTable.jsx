@@ -14,7 +14,8 @@ const ItemsTable = ({
 	headCells,
 	onEdit,
 	onDelete,
-	inAction
+	inAction,
+	onCheck
 }) => {
 	const copyModal = useRef(null);
 	const {handleClick, isCopied, setIsCopied} = useCopyModal(copyModal);
@@ -45,13 +46,14 @@ const ItemsTable = ({
 					{items.map((item, index) => (
 						<TableItem
 							key={item.uuid}
-							onSave={() => onEdit(item.uuid)}
+							onEdit={onEdit !== null ? onEdit(item.uuid) : null}
 							isActionsAllowed={item.edit_allowed}
-							onDelete={() => onDelete(item.uuid)}
+							onDelete={onDelete !== null ? () => onDelete(item.uuid) : null}
 							number={index + 1}
 							onClick={handleClick}
 							isLoading={inAction}
 							values={item.values}
+							onCheck={onCheck !== null ? () => onCheck(item.uuid) : null}
 						/>
 					))}
 				</TableBody>
@@ -67,8 +69,15 @@ ItemsTable.propTypes = {
 	fetchMore: PropTypes.func.isRequired,
 	items: PropTypes.array.isRequired,
 	headCells: PropTypes.array.isRequired,
-	onEdit: PropTypes.func.isRequired,
-	onDelete: PropTypes.func.isRequired
+	onEdit: PropTypes.func,
+	onDelete: PropTypes.func,
+	onCheck: PropTypes.func
+};
+
+ItemsTable.defaultProps = {
+	onEdit: null,
+	onDelete: null,
+	onCheck: null
 };
 
 export default ItemsTable;

@@ -2,10 +2,10 @@ import React from "react";
 import PropTypes from "prop-types";
 import classNames from "classnames";
 
-const TableCell = ({children, className, ...props}) => (
+const TableCell = ({children, className, onClick, ...props}) => (
 	<td
 		className={classNames(className, "px-4 py-3", {
-			"cursor-pointer": !!props.onClick
+			"cursor-pointer": onClick !== undefined
 		})}
 		{...props}
 	>

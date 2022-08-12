@@ -13,6 +13,7 @@ const TableItem = ({
 	onClick,
 	onDelete,
 	onEdit,
+	onCheck,
 	isActionsAllowed,
 	isLoading
 }) => {
@@ -24,9 +25,9 @@ const TableItem = ({
 
 	const [isEditable, setIsEditable] = useState(false);
 
-	const handleEdit = () => setIsEditable(true);
+	const enableIsEditable = () => setIsEditable(true);
 
-	const handleSave = async () => {
+	const handleEdit = async () => {
 		if (isDirty) {
 			await handleSubmit(onEdit)();
 		}
@@ -36,13 +37,15 @@ const TableItem = ({
 	return (
 		<TableRow>
 			<TableCell>{number}</TableCell>
-			{isActionsAllowed ? (
+			{isActionsAllowed &&
+			(onEdit !== null || onDelete !== null || onCheck !== null) ? (
 				<TableItemButtons
+					onCheck={onCheck}
 					isEditable={isEditable}
 					isLoading={isLoading}
 					onDelete={onDelete}
 					onEdit={handleEdit}
-					onSave={handleSave}
+					enableIsEditable={enableIsEditable}
 				/>
 			) : (
 				<TableCell>{tableFallbackStr}</TableCell>
@@ -101,6 +104,7 @@ TableItem.propTypes = {
 	onDelete: PropTypes.func,
 	isActionsAllowed: PropTypes.bool,
 	onEdit: PropTypes.func,
+	onCheck: PropTypes.func,
 	isLoading: PropTypes.bool,
 	values: PropTypes.array.isRequired
 };
@@ -108,6 +112,7 @@ TableItem.propTypes = {
 TableItem.defaultProps = {
 	onClick: null,
 	onDelete: null,
+	onCheck: null,
 	isActionsAllowed: false,
 	isLoading: false,
 	onEdit: null
