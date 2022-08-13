@@ -17,15 +17,16 @@ const TabItem = ({className, text, path, isDisabled}) => (
 		className={({isActive}) =>
 			classNames(
 				className,
-				"font-semibold py-8 text-lg border-b-2 transition-colors inline-block",
+				"relative h-full flex items-center font-semibold text-lg transition-colors before:transition-colors inline-block before:h-0.5 before:w-full before:absolute before:bottom-0 before:left-0",
 				{
-					"text-accent border-accent hover:text-accent": isActive,
-					"text-primaryLight border-transparent hover:text-white": !isActive
+					"text-accent before:bg-accent": isActive,
+					"text-text-darker hover:text-text-dark before:bg-transparent":
+						!isActive
 				}
 			)
 		}
 	>
-		{text}
+		<span>{text}</span>
 	</NavLink>
 );
 

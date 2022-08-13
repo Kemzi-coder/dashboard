@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import classNames from "classnames";
 
 const TabList = ({children, className}) => (
-	<div className={classNames(className, "space-x-8")}>{children}</div>
+	<div className={classNames(className, "space-x-8 flex")}>{children}</div>
 );
 
 TabList.propTypes = {
