@@ -9,12 +9,14 @@ import Auth from "../../../store/auth";
 import Avatar from "../../../components/Avatar/Avatar";
 
 const SettingsProfileForm = observer(() => {
+	const hiddenInputRef = useRef(null);
 	const [requests, setRequests] = useState([]);
-	const hiddenFileInput = useRef(null);
 	const {
 		handleSubmit,
 		register,
 		setError,
+		watch,
+		setValue,
 		formState: {errors, isSubmitting, dirtyFields}
 	} = useForm({mode: "all"});
 	const {
@@ -33,15 +35,23 @@ const SettingsProfileForm = observer(() => {
 			]);
 		}
 
+		if (dirtyFields.avatar) {
+			setRequests([...requests, Auth.uploadAvatar(data.avatar)]);
+		}
+
 		await Promise.all(requests);
+
+		setRequests([]);
 	};
 
 	const handleChange = e => {
 		const file = e.target.files[0];
-		setRequests([...requests, Auth.uploadAvatar(file)]);
+		const objectUrl = URL.createObjectURL(file);
+
+		setValue("avatar", objectUrl, {shouldDirty: true});
 	};
 
-	const handleClick = () => hiddenFileInput.current.click();
+	const handleClick = () => hiddenInputRef.current.click();
 
 	return (
 		<>
@@ -79,12 +89,17 @@ const SettingsProfileForm = observer(() => {
 				</form>
 				<div className="flex flex-col items-center">
 					<input
+						ref={hiddenInputRef}
 						onChange={handleChange}
-						ref={hiddenFileInput}
 						type="file"
 						hidden
 					/>
-					<Avatar className="mb-4" width={80} height={80} imagePath={avatar} />
+					<Avatar
+						className="mb-4"
+						width={80}
+						height={80}
+						imagePath={watch("avatar") || avatar}
+					/>
 					<Button onClick={handleClick} size="medium">
 						Upload photo
 					</Button>

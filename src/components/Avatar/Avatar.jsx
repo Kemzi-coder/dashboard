@@ -12,12 +12,13 @@ const Avatar = ({imagePath, width, height, className}) => {
 
 	return (
 		<img
+			width={width}
+			height={height}
+			style={{width: `${width}px`, height: `${height}px`}}
 			className={classNames(
 				className,
 				"rounded-full object-cover block border border-primaryLighter"
 			)}
-			width={width}
-			height={height}
 			src={imagePath}
 			alt="avatar"
 		/>
