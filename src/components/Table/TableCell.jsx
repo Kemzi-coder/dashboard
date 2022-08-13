@@ -4,9 +4,11 @@ import classNames from "classnames";
 
 const TableCell = ({children, className, onClick, ...props}) => (
 	<td
+		role="presentation"
 		className={classNames(className, "px-4 py-3", {
-			"cursor-pointer": onClick !== undefined
+			"cursor-pointer": onClick !== null
 		})}
+		onClick={onClick}
 		{...props}
 	>
 		{children}
