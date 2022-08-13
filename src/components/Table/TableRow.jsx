@@ -6,7 +6,7 @@ const TableRow = ({children, className}) => (
 	<tr
 		className={classNames(
 			className,
-			"text-left border rounded-2xl border-primaryLighter"
+			"text-left border-2 bg-primary-light border-primary-lighter"
 		)}
 	>
 		{children}

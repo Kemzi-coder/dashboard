@@ -99,6 +99,7 @@ const SettingsProfileForm = observer(() => {
 						width={80}
 						height={80}
 						imagePath={watch("avatar") || avatar}
+						username={username}
 					/>
 					<Button onClick={handleClick} size="medium">
 						Upload photo

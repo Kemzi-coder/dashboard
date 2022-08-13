@@ -63,15 +63,10 @@ const TableItem = ({
 
 				if (isEditAllowed) {
 					return (
-						<TableCell
-							role="presentation"
-							onClick={onClick}
-							className={classes}
-							key={name}
-						>
+						<TableCell onClick={onClick} className={classes} key={name}>
 							{isEditable ? (
 								<input
-									className="bg-transparent w-32 text-white border border-primaryLighter rounded-2xl py-1 px-2"
+									className="bg-transparent w-32 text-text-light border-2 border-primary-lighter rounded-base py-1 px-2"
 									defaultValue={value}
 									type="text"
 									{...register(name)}
@@ -84,12 +79,7 @@ const TableItem = ({
 				}
 
 				return (
-					<TableCell
-						key={name}
-						role="presentation"
-						onClick={onClick}
-						className={classes}
-					>
+					<TableCell key={name} onClick={onClick} className={classes}>
 						{value || tableFallbackStr}
 					</TableCell>
 				);

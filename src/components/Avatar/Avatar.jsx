@@ -3,10 +3,15 @@ import PropTypes from "prop-types";
 import classNames from "classnames";
 import FallbackAvatar from "../FallbackAvatar/FallbackAvatar";
 
-const Avatar = ({imagePath, width, height, className}) => {
+const Avatar = ({imagePath, width, height, className, username}) => {
 	if (!imagePath) {
 		return (
-			<FallbackAvatar width={width} height={height} className={className} />
+			<FallbackAvatar
+				username={username}
+				width={width}
+				height={height}
+				className={className}
+			/>
 		);
 	}
 
@@ -17,7 +22,7 @@ const Avatar = ({imagePath, width, height, className}) => {
 			style={{width: `${width}px`, height: `${height}px`}}
 			className={classNames(
 				className,
-				"rounded-full object-cover block border border-primaryLighter"
+				"rounded-full object-cover block border-2 border-primary-lighter"
 			)}
 			src={imagePath}
 			alt="avatar"
@@ -29,7 +34,8 @@ Avatar.propTypes = {
 	width: PropTypes.number,
 	height: PropTypes.number,
 	className: PropTypes.string,
-	imagePath: PropTypes.string.isRequired
+	imagePath: PropTypes.string.isRequired,
+	username: PropTypes.string.isRequired
 };
 
 Avatar.defaultProps = {

@@ -6,7 +6,7 @@ const StatItem = ({value, title, className}) => (
 	<div
 		className={classNames(
 			className,
-			"inline-block border py-4 px-8 rounded-2xl border-primaryLighter text-center"
+			"inline-block py-4 px-8 rounded-base bg-primary-light border-2 border-primary-lighter text-center"
 		)}
 	>
 		<p className="text-4xl font-semibold mb-1 text-accent">{value}</p>

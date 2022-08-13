@@ -15,7 +15,7 @@ const CopyModal = forwardRef(({isCopied, setIsCopied, delay}, ref) => {
 		<div
 			ref={ref}
 			className={classNames(
-				"absolute text-accent z-10 bg-primary border border-primaryLighter py-1 px-2 rounded-2xl opacity-0 transition-opacity",
+				"absolute text-success z-10 bg-primary-light border-2 border-primary-lighter py-1 px-2 rounded-base opacity-0 transition-opacity",
 				{"opacity-100": isCopied}
 			)}
 		>

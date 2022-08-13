@@ -29,10 +29,13 @@ const AuthRegisterForm = () => {
 
 	return (
 		<>
-			<h1 className="text-white text-5xl text-center mb-2 font-semibold">
+			<h1 className="text-text-light text-5xl text-center mb-4 font-semibold">
 				Register
 			</h1>
-			<NavLink className="text-white mb-6 block text-center" to={LOGIN_ROUTE}>
+			<NavLink
+				className="text-text-dark mb-6 block text-center"
+				to={LOGIN_ROUTE}
+			>
 				Already have an account?
 			</NavLink>
 			<form className="w-80" onSubmit={handleSubmit(onSubmit)}>

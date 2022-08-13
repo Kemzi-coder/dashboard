@@ -17,10 +17,8 @@ const AuthPage = () => {
 	}, [isLogin, location.pathname]);
 
 	return (
-		<div className="flex justify-center items-center bg-primary h-screen w-full">
-			<div className="p-24 rounded-2xl border-primaryLighter border">
-				{isLogin ? <AuthLoginForm /> : <AuthRegisterForm />}
-			</div>
+		<div className="flex justify-center items-center flex-col bg-primary h-screen w-full">
+			{isLogin ? <AuthLoginForm /> : <AuthRegisterForm />}
 		</div>
 	);
 };

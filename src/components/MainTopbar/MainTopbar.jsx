@@ -10,10 +10,10 @@ const MainTopbar = observer(({children}) => {
 	} = Auth;
 
 	return (
-		<div className="bg-primary px-16 flex">
+		<div className="px-16 flex bg-primary">
 			{children}
 			<div className="ml-auto flex items-center">
-				<Avatar className="mr-2" imagePath={avatar} />
+				<Avatar className="mr-2" imagePath={avatar} username={username} />
 				<p className="w-28 overflow-hidden text-ellipsis whitespace-nowrap">
 					{username}
 				</p>

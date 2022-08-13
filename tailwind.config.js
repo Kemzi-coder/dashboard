@@ -3,15 +3,31 @@ module.exports = {
 	content: ["./src/**/*.{js,jsx,ts,tsx}"],
 	theme: {
 		colors: {
-			primary: "#13161E",
-			primaryLighter: "#262931",
-			primaryLight: "#6C6C77",
-			accent: "#1F99C9",
-			white: "#FFFFFF",
+			text: {
+				light: "#ffffff",
+				dark: "#87888e",
+				darker: "#65656a"
+			},
+			primary: {
+				DEFAULT: "#1d1e25",
+				light: "#2b2c32",
+				lighter: "#333339"
+			},
+			accent: {
+				DEFAULT: "#6366ea",
+				dark: "#2d2f50",
+				darker: "#252635",
+				btn: "#4c50e6"
+			},
 			transparent: "transparent",
-			danger: "#DC2626",
-			success: "#22C55E",
-			warning: "#FBBF24"
+			danger: "#c85f5f",
+			success: "#78b1a3",
+			warning: "#cfa254"
+		},
+		extend: {
+			borderRadius: {
+				base: "0.5rem"
+			}
 		}
 	},
 	plugins: []

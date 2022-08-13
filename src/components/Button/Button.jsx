@@ -7,7 +7,7 @@ const Button = ({children, className, size, ...props}) => (
 		type="button"
 		className={classNames(
 			className,
-			"rounded-2xl py-2 px-4 text-white bg-accent uppercase font-semibold text-lg disabled:bg-primaryLight",
+			"rounded-base py-2 px-6 text-text-light bg-accent font-semibold disabled:bg-primary-light transition-colors hover:bg-accent-btn",
 			{"text-lg": size === "big", "text-base": size === "medium"}
 		)}
 		{...props}

@@ -12,7 +12,7 @@ const NavbarItem = ({className, startIcon: Icon, text, path}) => (
 				"flex whitespace-nowrap capitalize px-12 items-center relative font-medium transition-colors border-l-2",
 				{
 					"text-accent hover:text-accent border-accent": isActive,
-					"text-primaryLight hover:text-white border-transparent": !isActive
+					"text-text-darker hover:text-text-dark border-transparent": !isActive
 				}
 			)
 		}

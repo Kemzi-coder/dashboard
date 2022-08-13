@@ -12,12 +12,12 @@ const HomeStats = observer(() => {
 	const [slideIndex, setSlideIndex] = useState(0);
 	const statKeys = useMemo(() => Object.keys(stats), [stats]);
 
-	const slidesPerView = 4;
+	const slidesPerView = 5;
 	const slideWidth = 100 / slidesPerView;
 	const spaceBetween = 16;
 
 	useEffect(() => {
-		const lastIndex = statKeys.length - 1 - slidesPerView;
+		const lastIndex = statKeys.length - slidesPerView;
 
 		if (slideIndex < 0) {
 			setSlideIndex(lastIndex);
@@ -35,14 +35,16 @@ const HomeStats = observer(() => {
 		<>
 			<div className="flex items-center justify-between mb-8">
 				<h2 className="text-4xl font-semibold">Statistics</h2>
-				<div className="flex items-center">
-					<button className="mr-2" onClick={handlePrev} type="button">
-						<MdOutlineKeyboardArrowLeft size={22} />
-					</button>
-					<button onClick={handleNext} type="button">
-						<MdOutlineKeyboardArrowRight size={22} />
-					</button>
-				</div>
+				{statKeys.length > slidesPerView && (
+					<div className="flex items-center">
+						<button className="mr-2" onClick={handlePrev} type="button">
+							<MdOutlineKeyboardArrowLeft size={22} />
+						</button>
+						<button onClick={handleNext} type="button">
+							<MdOutlineKeyboardArrowRight size={22} />
+						</button>
+					</div>
+				)}
 			</div>
 			{isLoading ? (
 				<div>Loading...</div>
