@@ -35,8 +35,8 @@ const SettingsProfileForm = observer(() => {
 			]);
 		}
 
-		if (dirtyFields.avatar) {
-			setRequests([...requests, Auth.uploadAvatar(data.avatar)]);
+		if (dirtyFields.avatar_url) {
+			setRequests([...requests, Auth.uploadAvatar(data.avatar_file)]);
 		}
 
 		await Promise.all(requests);
@@ -48,7 +48,8 @@ const SettingsProfileForm = observer(() => {
 		const file = e.target.files[0];
 		const objectUrl = URL.createObjectURL(file);
 
-		setValue("avatar", objectUrl, {shouldDirty: true});
+		setValue("avatar_url", objectUrl, {shouldDirty: true});
+		setValue("avatar_file", file);
 	};
 
 	const handleClick = () => hiddenInputRef.current.click();
@@ -98,7 +99,7 @@ const SettingsProfileForm = observer(() => {
 						className="mb-4"
 						width={80}
 						height={80}
-						imagePath={watch("avatar") || avatar}
+						imagePath={watch("avatar_url") || avatar}
 						username={username}
 					/>
 					<Button onClick={handleClick} size="medium">
