@@ -7,6 +7,7 @@ const InfiniteScrollList = ({
 	isLoading,
 	hasMore,
 	onFetchMore,
+	isLoadingMore,
 	length
 }) => {
 	const lastElement = useRef(null);
@@ -15,9 +16,14 @@ const InfiniteScrollList = ({
 
 	return (
 		<>
-			{children}
-			{length === 0 && !isLoading && "List is empty."}
-			{isLoading && "Loading..."}
+			{length === 0 && !isLoading ? (
+				"List is empty."
+			) : (
+				<>
+					{isLoading ? "Loading..." : children}
+					{isLoadingMore && "Loading..."}
+				</>
+			)}
 			<div ref={lastElement} />
 		</>
 	);
@@ -26,6 +32,7 @@ const InfiniteScrollList = ({
 InfiniteScrollList.propTypes = {
 	children: PropTypes.node.isRequired,
 	isLoading: PropTypes.bool.isRequired,
+	isLoadingMore: PropTypes.bool.isRequired,
 	onFetchMore: PropTypes.func.isRequired,
 	hasMore: PropTypes.bool.isRequired,
 	length: PropTypes.number.isRequired

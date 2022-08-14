@@ -9,6 +9,7 @@ import TableItem from "../TableItem/TableItem";
 const ItemsTable = ({
 	hasMore,
 	isLoading,
+	isLoadingMore,
 	fetchMore,
 	items,
 	headCells,
@@ -24,6 +25,7 @@ const ItemsTable = ({
 		<InfiniteScrollList
 			hasMore={hasMore}
 			isLoading={isLoading}
+			isLoadingMore={isLoadingMore}
 			onFetchMore={fetchMore}
 			length={items.length}
 		>
@@ -65,6 +67,7 @@ const ItemsTable = ({
 ItemsTable.propTypes = {
 	hasMore: PropTypes.bool.isRequired,
 	isLoading: PropTypes.bool.isRequired,
+	isLoadingMore: PropTypes.bool.isRequired,
 	inAction: PropTypes.bool.isRequired,
 	fetchMore: PropTypes.func.isRequired,
 	items: PropTypes.array.isRequired,
