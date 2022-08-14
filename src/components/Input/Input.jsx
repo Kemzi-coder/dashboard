@@ -7,8 +7,13 @@ const Input = forwardRef(({startIcon: Icon, isInvalid, ...props}, ref) => (
 		<input
 			ref={ref}
 			className={classNames(
-				"peer text-lg w-full rounded-base bg-primary-light border-primary-lighter border-2 py-2 text-text-light placeholder:text-text-darker",
-				{"border-danger": isInvalid, "pl-12 pr-4": !!Icon, "px-4 peer": !Icon}
+				"peer text-lg w-full transition-colors rounded-base bg-primary-light border py-2 text-text-light placeholder:text-text-darker",
+				{
+					"border-danger": isInvalid,
+					"border-transparent": !isInvalid,
+					"pl-12 pr-4": !!Icon,
+					"px-4 peer": !Icon
+				}
 			)}
 			type="text"
 			{...props}
