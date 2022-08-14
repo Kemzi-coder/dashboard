@@ -41,6 +41,7 @@ const TableItem = ({
 			(onEdit !== null || onDelete !== null || onCheck !== null) ? (
 				<TableItemButtons
 					onCheck={onCheck}
+					isEditAllowed={values.some(value => value.is_editable === true)}
 					isEditable={isEditable}
 					isLoading={isLoading}
 					onDelete={onDelete}
@@ -51,19 +52,19 @@ const TableItem = ({
 				<TableCell>{tableFallbackStr}</TableCell>
 			)}
 			{values.map(item => {
-				const classes = [];
+				let className = "";
 				let {value} = item;
 				const {name, is_editable: isEditAllowed} = item;
 
 				if (name === "checked_at") {
 					value = formatDate(new Date(value));
 				} else if (name === "status") {
-					classes.push(getStatusClass(value));
+					className = getStatusClass(value);
 				}
 
 				if (isEditAllowed) {
 					return (
-						<TableCell onClick={onClick} className={classes} key={name}>
+						<TableCell onClick={onClick} className={className} key={name}>
 							{isEditable ? (
 								<input
 									className="bg-transparent w-32 text-text-light border-2 border-primary-lighter rounded-base py-1 px-2"
@@ -79,7 +80,7 @@ const TableItem = ({
 				}
 
 				return (
-					<TableCell key={name} onClick={onClick} className={classes}>
+					<TableCell key={name} onClick={onClick} className={className}>
 						{value || tableFallbackStr}
 					</TableCell>
 				);

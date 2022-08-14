@@ -8,7 +8,8 @@ const TableItemButtons = ({
 	onEdit,
 	enableIsEditable,
 	onDelete,
-	onCheck
+	onCheck,
+	isEditAllowed
 }) => (
 	<TableCell role="presentation" className="flex">
 		{onCheck !== null && (
@@ -21,25 +22,26 @@ const TableItemButtons = ({
 				check
 			</TableButton>
 		)}
-		{isEditable && onEdit !== null ? (
-			<TableButton
-				variant="success"
-				disabled={isLoading}
-				onClick={onEdit}
-				className="mr-3"
-			>
-				save
-			</TableButton>
-		) : (
-			<TableButton
-				variant="warning"
-				disabled={isLoading}
-				onClick={enableIsEditable}
-				className="mr-3"
-			>
-				edit
-			</TableButton>
-		)}
+		{isEditAllowed &&
+			(isEditable && onEdit !== null ? (
+				<TableButton
+					variant="success"
+					disabled={isLoading}
+					onClick={onEdit}
+					className="mr-3"
+				>
+					save
+				</TableButton>
+			) : (
+				<TableButton
+					variant="warning"
+					disabled={isLoading}
+					onClick={enableIsEditable}
+					className="mr-3"
+				>
+					edit
+				</TableButton>
+			))}
 		{onDelete !== null && (
 			<TableButton variant="danger" disabled={isLoading} onClick={onDelete}>
 				delete
@@ -50,11 +52,18 @@ const TableItemButtons = ({
 
 TableItemButtons.propTypes = {
 	enableIsEditable: PropTypes.func.isRequired,
-	onDelete: PropTypes.func.isRequired,
-	onCheck: PropTypes.func.isRequired,
+	onDelete: PropTypes.func,
+	onCheck: PropTypes.func,
 	isLoading: PropTypes.bool.isRequired,
-	onEdit: PropTypes.func.isRequired,
-	isEditable: PropTypes.bool.isRequired
+	onEdit: PropTypes.func,
+	isEditable: PropTypes.bool.isRequired,
+	isEditAllowed: PropTypes.bool.isRequired
+};
+
+TableItemButtons.defaultProps = {
+	onDelete: null,
+	onCheck: null,
+	onEdit: null
 };
 
 export default TableItemButtons;
