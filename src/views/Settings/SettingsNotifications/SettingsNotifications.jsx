@@ -7,6 +7,7 @@ import FormFields from "../../../components/FormFields/FormFields";
 import FormTextField from "../../../components/FormTextField/FormTextField";
 import NotificationSettings from "../../../store/notificationSettings";
 import {notificationSettingsFormValidation} from "../../../validation/settings";
+import Divider from "../../../components/Divider/Divider";
 
 const SettingsNotifications = observer(() => {
 	const {
@@ -34,7 +35,7 @@ const SettingsNotifications = observer(() => {
 
 	return (
 		<>
-			<h2 className="text-white text-4xl mb-4 font-semibold">
+			<h2 className="text-white text-4xl mb-6 font-semibold">
 				Notifications settings
 			</h2>
 			<form className="max-w-sm" onSubmit={handleSubmit(onSubmit)}>
@@ -44,6 +45,7 @@ const SettingsNotifications = observer(() => {
 						name="telegram_enable"
 						text="Enable telegram notifications"
 					/>
+					<Divider />
 					<FormTextField
 						defaultValue={settings.telegram_id}
 						placeholder="Telegram login"

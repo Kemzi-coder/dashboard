@@ -56,7 +56,7 @@ const SettingsProfileForm = observer(() => {
 
 	return (
 		<>
-			<h2 className="text-white text-4xl mb-4 font-semibold">
+			<h2 className="text-white text-4xl mb-6 font-semibold">
 				Profile settings
 			</h2>
 			<div className="flex">
