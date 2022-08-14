@@ -1,53 +1,57 @@
 import {observer} from "mobx-react-lite";
-import React, {useEffect, useMemo} from "react";
+import React, {useCallback, useEffect, useMemo} from "react";
 import ItemsTable from "../../../components/ItemsTable/ItemsTable";
 import useFetchFns from "../../../hooks/useFetchFns.hook";
-import Proxies from "../../../store/proxies";
+import proxies from "../../../store/proxies";
 import {
 	PROXIES_PRIVATE_ROUTE,
 	PROXIES_ROUTE
 } from "../../../utils/constants/routes";
 
 const ProxiesTable = observer(() => {
-	const {isLoading, proxies, page, hasMore, limit, inAction, headCells} =
-		Proxies;
 	const params = useMemo(
 		() => ({
 			page: 1,
-			per_page: limit,
+			per_page: proxies.limit,
 			table: true
 		}),
-		[limit]
+		[]
 	);
 
 	const [fetchProxies, fetchMoreProxies] = useFetchFns({
-		[PROXIES_PRIVATE_ROUTE]: [Proxies.fetchPrivate, Proxies.fetchMorePrivate],
-		[PROXIES_ROUTE]: [Proxies.fetchShared, Proxies.fetchMoreShared]
+		[PROXIES_PRIVATE_ROUTE]: [proxies.fetchPrivate, proxies.fetchMorePrivate],
+		[PROXIES_ROUTE]: [proxies.fetchShared, proxies.fetchMoreShared]
 	});
 
 	useEffect(() => {
 		fetchProxies(params);
 	}, [fetchProxies, params]);
 
-	useEffect(() => () => Proxies.setProxies([]), []);
+	useEffect(() => () => proxies.setIsLoading(true), []);
 
-	const handleDelete = async uuid => Proxies.delete(uuid);
+	const fetchMore = useCallback(
+		() => fetchMoreProxies({...params, page: proxies.page + 1}),
+		[fetchMoreProxies, params]
+	);
 
-	const handleEdit = uuid => async proxy => Proxies.edit(uuid, proxy);
+	const handleDelete = async uuid => proxies.delete(uuid);
 
-	const handleCheck = async uuid => Proxies.check(uuid);
+	const handleEdit = uuid => async proxy => proxies.edit(uuid, proxy);
+
+	const handleCheck = async uuid => proxies.check(uuid);
 
 	return (
 		<ItemsTable
-			hasMore={hasMore}
-			headCells={headCells}
-			inAction={inAction}
-			isLoading={isLoading}
-			items={proxies}
+			isLoadingMore={proxies.isLoadingMore}
+			hasMore={proxies.hasMore}
+			headCells={proxies.headCells}
+			inAction={proxies.inAction}
+			isLoading={proxies.isLoading}
+			items={proxies.proxies}
 			onCheck={handleCheck}
 			onDelete={handleDelete}
 			onEdit={handleEdit}
-			fetchMore={() => fetchMoreProxies({...params, page: page + 1})}
+			fetchMore={fetchMore}
 		/>
 	);
 });

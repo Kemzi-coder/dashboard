@@ -1,8 +1,7 @@
 import {observer} from "mobx-react-lite";
 import React, {useCallback, useEffect, useMemo, useState} from "react";
 import {useLocation} from "react-router-dom";
-import Accounts from "../../../store/accounts";
-import Stats from "../../../store/stats";
+import accounts from "../../../store/accounts";
 import {
 	ACCOUNTS_2FA_ROUTE,
 	ACCOUNTS_BAD_ROUTE,
@@ -14,20 +13,14 @@ import ItemsTable from "../../../components/ItemsTable/ItemsTable";
 const AccountsTable = observer(() => {
 	const location = useLocation();
 	const [status, setStatus] = useState("");
-	const {isLoading, accounts, page, hasMore, limit, headCells, inAction} =
-		Accounts;
 
 	const params = useMemo(
-		() => ({page: 1, per_page: limit, table: true, status}),
-		[limit, status]
+		() => ({page: 1, per_page: accounts.limit, table: true, status}),
+		[status]
 	);
 
 	useEffect(() => {
-		Stats.fetchAll();
-	}, []);
-
-	useEffect(() => {
-		Accounts.fetchAll(params);
+		accounts.fetchAll(params);
 	}, [params, status]);
 
 	useEffect(() => {
@@ -50,26 +43,27 @@ const AccountsTable = observer(() => {
 	}, [location.pathname]);
 
 	const fetchMore = useCallback(
-		() => Accounts.fetchMore({...params, page: page + 1}),
-		[params, page]
+		() => accounts.fetchMore({...params, page: accounts.page + 1}),
+		[params]
 	);
 
-	useEffect(() => () => Accounts.setAccounts([]), []);
+	useEffect(() => () => accounts.setIsLoading(true), []);
 
-	const handleEdit = uuid => async account => Accounts.edit(uuid, account);
+	const handleEdit = uuid => async account => accounts.edit(uuid, account);
 
-	const handleDelete = async uuid => Accounts.delete(uuid);
+	const handleDelete = async uuid => accounts.delete(uuid);
 
 	return (
 		<ItemsTable
-			isLoading={isLoading}
+			isLoading={accounts.isLoading}
+			isLoadingMore={accounts.isLoadingMore}
 			onEdit={handleEdit}
 			onDelete={handleDelete}
 			fetchMore={fetchMore}
-			headCells={headCells}
-			inAction={inAction}
-			hasMore={hasMore}
-			items={accounts}
+			headCells={accounts.headCells}
+			inAction={accounts.inAction}
+			hasMore={accounts.hasMore}
+			items={accounts.accounts}
 		/>
 	);
 });

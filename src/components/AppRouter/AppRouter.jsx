@@ -1,7 +1,7 @@
 import {observer} from "mobx-react-lite";
 import React from "react";
 import {Navigate, Route, Routes} from "react-router-dom";
-import Auth from "../../store/auth";
+import auth from "../../store/auth";
 import {
 	ACCOUNTS_2FA_ROUTE,
 	ACCOUNTS_BAD_ROUTE,
@@ -36,9 +36,7 @@ import SettingsPage from "../../views/Settings/SettingsPage/SettingsPage";
 import SettingsProfileForm from "../../views/Settings/SettingsProfileForm/SettingsProfileForm";
 
 const AppRouter = observer(() => {
-	const {isAuth} = Auth;
-
-	if (isAuth) {
+	if (auth.isAuth) {
 		return (
 			<Routes>
 				<Route path={HOME_ROUTE} element={<HomePage />}>

@@ -2,7 +2,7 @@ import React from "react";
 import {useForm} from "react-hook-form";
 import Button from "../../../components/Button/Button";
 import FormFields from "../../../components/FormFields/FormFields";
-import Proxies from "../../../store/proxies";
+import proxies from "../../../store/proxies";
 import FormTextField from "../../../components/FormTextField/FormTextField";
 import createFormValidation from "../../../validation/proxies";
 
@@ -14,7 +14,7 @@ const ProxiesCreateForm = () => {
 	} = useForm({mode: "all"});
 
 	const onSubmit = async data => {
-		await Proxies.create(data);
+		await proxies.create(data);
 	};
 
 	return (

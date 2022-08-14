@@ -1,20 +1,22 @@
 import {observer} from "mobx-react-lite";
-import React, {useEffect, useMemo, useState} from "react";
+import React, {useEffect, useState} from "react";
 import {
 	MdOutlineKeyboardArrowLeft,
 	MdOutlineKeyboardArrowRight
 } from "react-icons/md";
 import StatItem from "../../../components/StatItem/StatItem";
-import Stats from "../../../store/stats";
+import stats from "../../../store/stats";
 
 const HomeStats = observer(() => {
-	const {stats, isLoading} = Stats;
 	const [slideIndex, setSlideIndex] = useState(0);
-	const statKeys = useMemo(() => Object.keys(stats), [stats]);
+	const statKeys = Object.keys(stats.stats);
 
 	const slidesPerView = 5;
 	const slideWidth = 100 / slidesPerView;
 	const spaceBetween = 16;
+
+	const wrapperTransform = `translateX(-${slideWidth * slideIndex}%)`;
+	const wrapperMargin = `0 -${spaceBetween / 2}px`;
 
 	useEffect(() => {
 		const lastIndex = statKeys.length - slidesPerView;
@@ -27,6 +29,11 @@ const HomeStats = observer(() => {
 			setSlideIndex(0);
 		}
 	}, [slideIndex, statKeys.length]);
+
+	useEffect(() => {
+		stats.fetchAll();
+		return () => stats.setIsLoading(true);
+	}, []);
 
 	const handleNext = () => setSlideIndex(prev => prev + 1);
 	const handlePrev = () => setSlideIndex(prev => prev - 1);
@@ -46,33 +53,34 @@ const HomeStats = observer(() => {
 					</div>
 				)}
 			</div>
-			{isLoading ? (
-				<div>Loading...</div>
+			{stats.isLoading ? (
+				"Loading..."
 			) : (
 				<div className="overflow-hidden mx-auto relative">
 					<div
 						className="flex relative transition-transform"
-						style={{
-							transform: `translateX(-${slideWidth * slideIndex}%)`,
-							margin: `0 -${spaceBetween / 2}px`
-						}}
+						style={{transform: wrapperTransform, margin: wrapperMargin}}
 					>
-						{statKeys.map(key => (
-							<div
-								key={key}
-								className="flex-shrink-0"
-								style={{
-									padding: `0 ${spaceBetween / 2}px`,
-									width: `${slideWidth}%`
-								}}
-							>
-								<StatItem
-									className="px-0 w-full"
-									value={stats[key]}
-									title={`${key} Accounts`}
-								/>
-							</div>
-						))}
+						{statKeys.map(key => {
+							const value = stats.stats[key];
+							const title = `${key} Accounts`;
+							const padding = `0 ${spaceBetween / 2}px`;
+							const width = `${slideWidth}%`;
+
+							return (
+								<div
+									key={key}
+									className="flex-shrink-0"
+									style={{padding, width}}
+								>
+									<StatItem
+										className="px-0 w-full"
+										value={value}
+										title={title}
+									/>
+								</div>
+							);
+						})}
 					</div>
 				</div>
 			)}

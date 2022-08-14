@@ -1,11 +1,11 @@
 import {observer} from "mobx-react-lite";
-import React, {useLayoutEffect} from "react";
+import React, {useEffect} from "react";
 import {useForm} from "react-hook-form";
 import Button from "../../../components/Button/Button";
 import FormCheckboxField from "../../../components/FormCheckboxField/FormCheckboxField";
 import FormFields from "../../../components/FormFields/FormFields";
 import FormTextField from "../../../components/FormTextField/FormTextField";
-import NotificationSettings from "../../../store/notificationSettings";
+import notificationSettings from "../../../store/notificationSettings";
 import {notificationSettingsFormValidation} from "../../../validation/settings";
 import Divider from "../../../components/Divider/Divider";
 
@@ -16,20 +16,19 @@ const SettingsNotifications = observer(() => {
 		reset,
 		formState: {errors, isSubmitting, dirtyFields, isValid}
 	} = useForm({mode: "all"});
-	const {settings, isLoading} = NotificationSettings;
 
-	useLayoutEffect(() => {
-		NotificationSettings.fetch();
+	useEffect(() => {
+		notificationSettings.fetch();
 
-		return () => NotificationSettings.setIsLoading(true);
+		return () => notificationSettings.setIsLoading(true);
 	}, []);
 
 	const onSubmit = async data => {
-		await NotificationSettings.edit(data);
-		reset(settings);
+		await notificationSettings.edit(data);
+		reset(notificationSettings.settings);
 	};
 
-	if (isLoading) {
+	if (notificationSettings.isLoading) {
 		return "Loading...";
 	}
 
@@ -41,13 +40,13 @@ const SettingsNotifications = observer(() => {
 			<form className="max-w-sm" onSubmit={handleSubmit(onSubmit)}>
 				<FormFields className="mb-4" register={register} errors={errors}>
 					<FormCheckboxField
-						defaultChecked={settings.telegram_notify}
+						defaultChecked={notificationSettings.settings.telegram_notify}
 						name="telegram_enable"
 						text="Enable telegram notifications"
 					/>
 					<Divider />
 					<FormTextField
-						defaultValue={settings.telegram_id}
+						defaultValue={notificationSettings.settings.telegram_id}
 						placeholder="Telegram login"
 						name="telegram_uuid"
 						options={notificationSettingsFormValidation.telegram_uuid}

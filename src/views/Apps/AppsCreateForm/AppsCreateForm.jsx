@@ -2,7 +2,7 @@ import React from "react";
 import {useForm} from "react-hook-form";
 import Button from "../../../components/Button/Button";
 import FormFields from "../../../components/FormFields/FormFields";
-import Apps from "../../../store/apps";
+import apps from "../../../store/apps";
 import FormTextField from "../../../components/FormTextField/FormTextField";
 import createFormValidation from "../../../validation/apps";
 
@@ -14,7 +14,7 @@ const AppsCreateForm = () => {
 	} = useForm({mode: "all"});
 
 	const onSubmit = async data => {
-		await Apps.create(data);
+		await apps.create(data);
 	};
 
 	return (

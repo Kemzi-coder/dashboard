@@ -6,7 +6,7 @@ import {LOGIN_ROUTE} from "../../../utils/constants/routes";
 import FormFields from "../../../components/FormFields/FormFields";
 import FormTextField from "../../../components/FormTextField/FormTextField";
 import Button from "../../../components/Button/Button";
-import Auth from "../../../store/auth";
+import auth from "../../../store/auth";
 import authFormValidation from "../../../validation/auth";
 
 const AuthRegisterForm = () => {
@@ -22,7 +22,7 @@ const AuthRegisterForm = () => {
 	const redirectToLoginForm = () => navigate(LOGIN_ROUTE);
 
 	const onSubmit = async data => {
-		await Auth.register(data, setError, redirectToLoginForm);
+		await auth.register(data, setError, redirectToLoginForm);
 	};
 
 	const handleClick = () => clearErrors("response");

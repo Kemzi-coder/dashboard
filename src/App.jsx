@@ -3,19 +3,19 @@ import "./app.css";
 import {BrowserRouter} from "react-router-dom";
 import {observer} from "mobx-react-lite";
 import AppRouter from "./components/AppRouter/AppRouter";
-import Auth from "./store/auth";
+import auth from "./store/auth";
 
 const App = observer(() => {
-	const {isLoading} = Auth;
-
 	useEffect(() => {
 		if (localStorage.getItem("token")) {
-			Auth.check();
+			auth.check();
+		} else {
+			auth.setIsLoading(false);
 		}
 	}, []);
 
-	if (isLoading) {
-		return <div>Loading...</div>;
+	if (auth.isLoading) {
+		return "Loading...";
 	}
 
 	return (
