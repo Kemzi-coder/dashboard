@@ -5,7 +5,9 @@ import getHasMore from "../utils/helpers/getHasMore";
 class Accounts {
 	accounts = [];
 
-	isLoading = false;
+	isLoading = true;
+
+	isLoadingMore = false;
 
 	headCells = [];
 
@@ -15,121 +17,91 @@ class Accounts {
 
 	inAction = false;
 
-	limit = 2;
+	limit = 10;
 
 	constructor() {
 		makeAutoObservable(this, {}, {autoBind: true});
-	}
-
-	setPage(page) {
-		this.page = page;
-	}
-
-	reset() {
-		this.accounts = [];
-		this.page = 1;
-	}
-
-	setAccounts(accounts) {
-		this.accounts = accounts;
-	}
-
-	addAccounts(accounts) {
-		this.accounts = [...this.accounts, ...accounts];
 	}
 
 	setIsLoading(isLoading) {
 		this.isLoading = isLoading;
 	}
 
-	setHasMore(hasMore) {
-		this.hasMore = hasMore;
-	}
-
-	setHeadCells(headCells) {
-		this.headCells = headCells;
-	}
-
-	setInAction(inAction) {
-		this.inAction = inAction;
-	}
-
-	deleteAccount(uuid) {
-		this.accounts = this.accounts.filter(account => account.uuid !== uuid);
-	}
-
-	editAccount(uuid, account) {
-		this.accounts = this.accounts.map(item =>
-			item.uuid === uuid ? {...item, ...account} : item
-		);
-	}
-
-	async delete(uuid) {
-		this.setInAction(true);
+	*delete(uuid) {
+		this.inAction = true;
 		try {
-			const response = await AccountsAPI.delete(uuid);
+			const response = yield AccountsAPI.delete(uuid);
 			console.log(response);
-			this.deleteAccount(uuid);
+			this.accounts = this.accounts.filter(account => account.uuid !== uuid);
 		} catch (e) {
 			console.log(e);
 		} finally {
-			this.setInAction(false);
+			this.inAction = false;
 		}
 	}
 
-	async edit(uuid, account) {
-		this.setInAction(true);
+	*edit(uuid, account) {
+		this.inAction = true;
 		try {
-			const response = await AccountsAPI.edit(uuid, account);
+			const response = yield AccountsAPI.edit(uuid, account);
 			console.log(response);
-			this.editAccount(
-				response.data.result.account.account.uuid,
-				response.data.result.account.account
+			const {
+				account: {
+					account: resAccount,
+					account: {uuid: resUuid}
+				}
+			} = response.data.result;
+
+			this.accounts = this.accounts.map(item =>
+				item.uuid === resUuid ? {...item, ...resAccount} : item
 			);
 		} catch (e) {
 			console.log(e);
 		} finally {
-			this.setInAction(false);
+			this.inAction = false;
 		}
 	}
 
-	async fetchAll(params) {
-		this.reset();
-		this.setIsLoading(true);
+	*fetchAll(params) {
+		this.isLoading = true;
 		try {
-			const response = await AccountsAPI.fetchAll(params);
+			const response = yield AccountsAPI.fetchAll(params);
 			console.log(response);
-			const {page} = response.data.result;
-			const totalPageCount = response.data.result.total_page;
+			const {
+				page,
+				total_page: totalPageCount,
+				accounts: {accounts, table_names: headCells}
+			} = response.data.result;
 
-			this.setHasMore(getHasMore(page, totalPageCount));
-
-			this.setAccounts(response.data.result.accounts.accounts);
-			this.setPage(response.data.result.page);
-			this.setHeadCells(response.data.result.accounts.table_names);
+			this.hasMore = getHasMore(page, totalPageCount);
+			this.accounts = accounts;
+			this.page = page;
+			this.headCells = headCells;
 		} catch (e) {
 			console.log(e);
 		} finally {
-			this.setIsLoading(false);
+			this.isLoading = false;
 		}
 	}
 
-	async fetchMore(params) {
-		this.setIsLoading(true);
+	*fetchMore(params) {
+		this.isLoadingMore = true;
 		try {
-			const response = await AccountsAPI.fetchAll(params);
+			const response = yield AccountsAPI.fetchAll(params);
 			console.log(response);
-			const {page} = response.data.result;
-			const totalPageCount = response.data.result.total_page;
+			const {
+				page,
+				total_page: totalPageCount,
+				accounts: {accounts}
+			} = response.data.result;
 
-			this.setHasMore(getHasMore(page, totalPageCount));
-
-			this.addAccounts(response.data.result.accounts.accounts);
-			this.setPage(response.data.result.page);
+			this.hasMore = getHasMore(page, totalPageCount);
+			this.accounts = [...this.accounts, ...accounts];
+			this.page = page;
 		} catch (e) {
 			console.log(e);
 		} finally {
-			this.setIsLoading(false);
+			this.isLoadingMore = false;
 		}
 	}
 }

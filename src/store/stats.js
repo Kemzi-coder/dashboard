@@ -4,30 +4,27 @@ import StatsAPI from "../API/stats/stats.api";
 class Stats {
 	stats = {};
 
-	isLoading = false;
+	isLoading = true;
 
 	constructor() {
 		makeAutoObservable(this);
-	}
-
-	setStats(stats) {
-		this.stats = stats;
 	}
 
 	setIsLoading(isLoading) {
 		this.isLoading = isLoading;
 	}
 
-	async fetchAll() {
-		this.setIsLoading(true);
+	*fetchAll() {
+		this.isLoading = true;
 		try {
-			const response = await StatsAPI.fetchAll();
+			const response = yield StatsAPI.fetchAll();
 			console.log(response);
-			this.setStats(response.data.result.accounts);
+			const {accounts: stats} = response.data.result;
+			this.stats = stats;
 		} catch (e) {
 			console.log(e);
 		} finally {
-			this.setIsLoading(false);
+			this.isLoading = false;
 		}
 	}
 }

@@ -10,33 +10,32 @@ class NotificationSettings {
 		makeAutoObservable(this);
 	}
 
-	setSettings(settings) {
-		this.settings = settings;
-	}
-
 	setIsLoading(isLoading) {
 		this.isLoading = isLoading;
 	}
 
-	async fetch() {
-		this.setIsLoading(true);
+	*fetch() {
+		this.isLoading = true;
 		try {
-			const response = await NotificationSettingsAPI.fetch();
+			const response = yield NotificationSettingsAPI.fetch();
 			console.log(response);
-			this.setSettings(response.data.result.contact);
+			const {contact: settings} = response.data.result;
+
+			this.settings = settings;
 		} catch (e) {
 			console.log(e);
 		} finally {
-			this.setIsLoading(false);
+			this.isLoading = false;
 		}
 	}
 
-	// eslint-disable-next-line class-methods-use-this
-	async edit(settings) {
+	*edit(settings) {
 		try {
-			const response = await NotificationSettingsAPI.edit(settings);
+			const response = yield NotificationSettingsAPI.edit(settings);
 			console.log(response);
-			this.setSettings(response.data.result.contact);
+			const {contact: resSettings} = response.data.result;
+
+			this.settings = resSettings;
 		} catch (e) {
 			console.log(e);
 		}

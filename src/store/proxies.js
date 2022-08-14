@@ -5,13 +5,15 @@ import getHasMore from "../utils/helpers/getHasMore";
 class Proxies {
 	proxies = [];
 
-	isLoading = false;
+	isLoading = true;
+
+	isLoadingMore = false;
 
 	headCells = [];
 
 	page = 1;
 
-	limit = 2;
+	limit = 10;
 
 	inAction = false;
 
@@ -21,185 +23,168 @@ class Proxies {
 		makeAutoObservable(this, {}, {autoBind: true});
 	}
 
-	setPage(page) {
-		this.page = page;
-	}
-
-	setProxies(proxies) {
-		this.proxies = proxies;
-	}
-
-	reset() {
-		this.proxies = [];
-		this.page = 1;
-	}
-
-	addProxies(proxies) {
-		this.proxies = [...this.proxies, ...proxies];
-	}
-
-	createProxy(proxy) {
-		this.proxies.push(proxy);
-	}
-
-	deleteProxy(uuid) {
-		this.proxies = this.proxies.filter(proxy => proxy.uuid !== uuid);
-	}
-
-	editProxy(uuid, proxy) {
-		this.proxies = this.proxies.map(item =>
-			item.uuid === uuid ? {...item, ...proxy} : item
-		);
-	}
-
 	setIsLoading(isLoading) {
 		this.isLoading = isLoading;
 	}
 
-	setInAction(inAction) {
-		this.inAction = inAction;
-	}
-
-	setHasMore(hasMore) {
-		this.hasMore = hasMore;
-	}
-
-	setHeadCells(headCells) {
-		this.headCells = headCells;
-	}
-
-	async delete(uuid) {
-		this.setInAction(true);
+	*delete(uuid) {
+		this.inAction = true;
 		try {
-			const response = await ProxiesAPI.delete(uuid);
+			const response = yield ProxiesAPI.delete(uuid);
 			console.log(response);
-			this.deleteProxy(uuid);
+			const {
+				proxy: {
+					proxy: {uuid: resUuid}
+				}
+			} = response.data.result;
+
+			this.proxies = this.proxies.filter(proxy => proxy.uuid !== resUuid);
 		} catch (e) {
 			console.log(e);
 		} finally {
-			this.setInAction(false);
+			this.inAction = false;
 		}
 	}
 
-	async edit(uuid, proxy) {
-		this.setInAction(true);
+	*edit(uuid, proxy) {
+		this.inAction = true;
 		try {
-			const response = await ProxiesAPI.edit(uuid, proxy);
+			const response = yield ProxiesAPI.edit(uuid, proxy);
 			console.log(response);
-			this.editProxy(
-				response.data.result.proxy.proxy.uuid,
-				response.data.result.proxy.proxy
+			const {
+				proxy: {
+					proxy: resProxy,
+					proxy: {uuid: resUuid}
+				}
+			} = response.data.result;
+
+			this.proxies = this.proxies.map(item =>
+				item.uuid === resUuid ? {...item, ...resProxy} : item
 			);
 		} catch (e) {
 			console.log(e);
 		} finally {
-			this.setInAction(false);
+			this.inAction = false;
 		}
 	}
 
-	async create(proxy) {
+	*create(proxy) {
 		try {
-			const response = await ProxiesAPI.create(proxy);
+			const response = yield ProxiesAPI.create(proxy);
 			console.log(response);
-			this.createProxy(response.data.result.proxy.proxy);
+			const {
+				proxy: {proxy: resProxy}
+			} = response.data.result;
+
+			this.proxies.push(resProxy);
 		} catch (e) {
 			console.log(e);
 		}
 	}
 
-	async check(uuid) {
-		this.setInAction(true);
+	*check(uuid) {
+		this.inAction = true;
 		try {
-			const response = await ProxiesAPI.check(uuid);
+			const response = yield ProxiesAPI.check(uuid);
 			console.log(response);
-			this.editProxy(
-				response.data.result.proxy.proxy.uuid,
-				response.data.result.proxy.proxy
+			const {
+				proxy: resProxy,
+				proxy: {uuid: resUuid}
+			} = response.data.result;
+
+			this.proxies = this.proxies.map(item =>
+				item.uuid === resUuid ? {...item, ...resProxy} : item
 			);
 		} catch (e) {
 			console.log(e);
 		} finally {
-			this.setInAction(false);
+			this.inAction = false;
 		}
 	}
 
-	async fetchPrivate(params) {
-		this.reset();
-		this.setIsLoading(true);
+	*fetchPrivate(params) {
+		this.isLoading = true;
 		try {
-			const response = await ProxiesAPI.fetchPrivate(params);
+			const response = yield ProxiesAPI.fetchPrivate(params);
 			console.log(response);
-			const {page} = response.data.result;
-			const totalPageCount = response.data.result.total_page;
+			const {
+				page,
+				total_page: totalPageCount,
+				proxy: {proxy: proxies, table_names: headCells}
+			} = response.data.result;
 
-			this.setHasMore(getHasMore(page, totalPageCount));
-
-			this.setProxies(response.data.result.proxy.proxy);
-			this.setPage(response.data.result.page);
-			this.setHeadCells(response.data.result.proxy.table_names);
+			this.hasMore = getHasMore(page, totalPageCount);
+			this.proxies = proxies;
+			this.page = page;
+			this.headCells = headCells;
 		} catch (e) {
 			console.log(e);
 		} finally {
-			this.setIsLoading(false);
+			this.isLoading = false;
 		}
 	}
 
-	async fetchMorePrivate(params) {
-		this.setIsLoading(true);
+	*fetchMorePrivate(params) {
+		this.isLoadingMore = true;
 		try {
-			const response = await ProxiesAPI.fetchPrivate(params);
+			const response = yield ProxiesAPI.fetchPrivate(params);
 			console.log(response);
-			const {page} = response.data.result;
-			const totalPageCount = response.data.result.total_page;
+			const {
+				page,
+				total_page: totalPageCount,
+				proxy: {proxy: proxies}
+			} = response.data.result;
 
-			this.setHasMore(getHasMore(page, totalPageCount));
-
-			this.addProxies(response.data.result.proxy.proxy);
-			this.setPage(response.data.result.page);
+			this.hasMore = getHasMore(page, totalPageCount);
+			this.proxies = [...this.proxies, ...proxies];
+			this.page = page;
 		} catch (e) {
 			console.log(e);
 		} finally {
-			this.setIsLoading(false);
+			this.isLoadingMore = false;
 		}
 	}
 
-	async fetchShared(params) {
-		this.reset();
-		this.setIsLoading(true);
+	*fetchShared(params) {
+		this.isLoading = true;
 		try {
-			const response = await ProxiesAPI.fetchShared(params);
+			const response = yield ProxiesAPI.fetchShared(params);
 			console.log(response);
-			const {page} = response.data.result;
-			const totalPageCount = response.data.result.total_page;
+			const {
+				page,
+				total_page: totalPageCount,
+				proxy: {proxy: proxies, table_names: headCells}
+			} = response.data.result;
 
-			this.setHasMore(getHasMore(page, totalPageCount));
-
-			this.setProxies(response.data.result.proxy.proxy);
-			this.setPage(response.data.result.page);
-			this.setHeadCells(response.data.result.proxy.table_names);
+			this.hasMore = getHasMore(page, totalPageCount);
+			this.proxies = proxies;
+			this.page = page;
+			this.headCells = headCells;
 		} catch (e) {
 			console.log(e);
 		} finally {
-			this.setIsLoading(false);
+			this.isLoading = false;
 		}
 	}
 
-	async fetchMoreShared(params) {
-		this.setIsLoading(true);
+	*fetchMoreShared(params) {
+		this.isLoadingMore = true;
 		try {
-			const response = await ProxiesAPI.fetchShared(params);
+			const response = yield ProxiesAPI.fetchShared(params);
 			console.log(response);
-			const {page} = response.data.result;
-			const totalPageCount = response.data.result.total_page;
+			const {
+				page,
+				total_page: totalPageCount,
+				proxy: {proxy: proxies}
+			} = response.data.result;
 
-			this.setHasMore(getHasMore(page, totalPageCount));
-
-			this.addProxies(response.data.result.proxy.proxy);
-			this.setPage(response.data.result.page);
+			this.hasMore = getHasMore(page, totalPageCount);
+			this.proxies = [...this.proxies, ...proxies];
+			this.page = page;
 		} catch (e) {
 			console.log(e);
 		} finally {
-			this.setIsLoading(false);
+			this.isLoadingMore = false;
 		}
 	}
 }

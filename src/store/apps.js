@@ -5,13 +5,15 @@ import getHasMore from "../utils/helpers/getHasMore";
 class Apps {
 	apps = [];
 
-	isLoading = false;
+	isLoading = true;
+
+	isLoadingMore = false;
 
 	headCells = [];
 
 	page = 1;
 
-	limit = 2;
+	limit = 10;
 
 	inAction = false;
 
@@ -21,169 +23,147 @@ class Apps {
 		makeAutoObservable(this, {}, {autoBind: true});
 	}
 
-	setPage(page) {
-		this.page = page;
-	}
-
-	setApps(apps) {
-		this.apps = apps;
-	}
-
-	reset() {
-		this.apps = [];
-		this.page = 1;
-	}
-
-	addApps(apps) {
-		this.apps = [...this.apps, ...apps];
-	}
-
-	createApp(proxy) {
-		this.apps.push(proxy);
-	}
-
-	deleteApp(uuid) {
-		this.apps = this.apps.filter(app => app.uuid !== uuid);
-	}
-
-	editApp(uuid, app) {
-		this.apps = this.apps.map(item =>
-			item.uuid === uuid ? {...item, ...app} : item
-		);
-	}
-
 	setIsLoading(isLoading) {
 		this.isLoading = isLoading;
 	}
 
-	setInAction(inAction) {
-		this.inAction = inAction;
-	}
-
-	setHasMore(hasMore) {
-		this.hasMore = hasMore;
-	}
-
-	setHeadCells(headCells) {
-		this.headCells = headCells;
-	}
-
-	async delete(uuid) {
-		this.setInAction(true);
+	*delete(uuid) {
+		this.inAction = true;
 		try {
-			const response = await AppsAPI.delete(uuid);
+			const response = yield AppsAPI.delete(uuid);
 			console.log(response);
-			this.deleteApp(uuid);
+			const {
+				app: {
+					app: {uuid: newUuid}
+				}
+			} = response.data.result;
+
+			this.apps = this.apps.filter(app => app.uuid !== newUuid);
 		} catch (e) {
 			console.log(e);
 		} finally {
-			this.setInAction(false);
+			this.inAction = false;
 		}
 	}
 
-	async edit(uuid, app) {
-		this.setInAction(true);
+	*edit(uuid, app) {
+		this.inAction = true;
 		try {
-			const response = await AppsAPI.edit(uuid, app);
+			const response = yield AppsAPI.edit(uuid, app);
 			console.log(response);
-			this.editApp(
-				response.data.result.app.app.uuid,
-				response.data.result.app.app
+			const {
+				app: {
+					app: newApp,
+					app: {uuid: newUuid}
+				}
+			} = response.result;
+
+			this.apps = this.apps.map(item =>
+				item.uuid === newUuid ? {...item, ...newApp} : item
 			);
 		} catch (e) {
 			console.log(e);
 		} finally {
-			this.setInAction(false);
+			this.inAction = false;
 		}
 	}
 
-	async create(app) {
+	*create(app) {
 		try {
-			const response = await AppsAPI.create(app);
+			const response = yield AppsAPI.create(app);
 			console.log(response);
-			this.createApp(response.data.result.app.app);
+			const {
+				app: {app: newApp}
+			} = response.data.result;
+
+			this.apps.push(newApp);
 		} catch (e) {
 			console.log(e);
 		}
 	}
 
-	async fetchPrivate(params) {
-		this.reset();
-		this.setIsLoading(true);
+	*fetchPrivate(params) {
+		this.isLoading = true;
 		try {
-			const response = await AppsAPI.fetchPrivate(params);
-			console.log(response);
-			const {page} = response.data.result;
-			const totalPageCount = response.data.result.total_page;
+			const response = yield AppsAPI.fetchPrivate(params);
+			const {
+				page,
+				total_page: totalPageCount,
+				app: {app: apps, table_names: headCells}
+			} = response.data.result;
 
-			this.setHasMore(getHasMore(page, totalPageCount));
-
-			this.setApps(response.data.result.app.app);
-			this.setPage(response.data.result.page);
-			this.setHeadCells(response.data.result.app.table_names);
-		} catch (e) {
-			console.log(e);
-		} finally {
-			this.setIsLoading(false);
-		}
-	}
-
-	async fetchMorePrivate(params) {
-		this.setIsLoading(true);
-		try {
-			const response = await AppsAPI.fetchPrivate(params);
-			console.log(response);
-			const {page} = response.data.result;
-			const totalPageCount = response.data.result.total_page;
-
-			this.setHasMore(getHasMore(page, totalPageCount));
-
-			this.addApps(response.data.result.app.app);
-			this.setPage(response.data.result.page);
+			this.hasMore = getHasMore(page, totalPageCount);
+			this.apps = apps;
+			this.page = page;
+			this.headCells = headCells;
 		} catch (e) {
 			console.log(e);
 		} finally {
-			this.setIsLoading(false);
+			this.isLoading = false;
 		}
 	}
 
-	async fetchShared(params) {
-		this.reset();
-		this.setIsLoading(true);
+	*fetchMorePrivate(params) {
+		this.isLoadingMore = true;
 		try {
-			const response = await AppsAPI.fetchShared(params);
+			const response = yield AppsAPI.fetchPrivate(params);
 			console.log(response);
-			const {page} = response.data.result;
-			const totalPageCount = response.data.result.total_page;
+			const {
+				page,
+				total_page: totalPageCount,
+				app: {app: apps}
+			} = response.data.result;
 
-			this.setHasMore(getHasMore(page, totalPageCount));
-
-			this.setApps(response.data.result.app.app);
-			this.setPage(response.data.result.page);
-			this.setHeadCells(response.data.result.app.table_names);
+			this.hasMore = getHasMore(page, totalPageCount);
+			this.apps = [...this.apps, ...apps];
+			this.page = page;
 		} catch (e) {
 			console.log(e);
 		} finally {
-			this.setIsLoading(false);
+			this.isLoadingMore = false;
 		}
 	}
 
-	async fetchMoreShared(params) {
-		this.setIsLoading(true);
+	*fetchShared(params) {
+		this.isLoading = true;
 		try {
-			const response = await AppsAPI.fetchShared(params);
+			const response = yield AppsAPI.fetchShared(params);
 			console.log(response);
-			const {page} = response.data.result;
-			const totalPageCount = response.data.result.total_page;
+			const {
+				page,
+				total_page: totalPageCount,
+				app: {app: apps, table_names: headCells}
+			} = response.data.result;
 
-			this.setHasMore(getHasMore(page, totalPageCount));
-
-			this.addApps(response.data.result.app.app);
-			this.setPage(response.data.result.page);
+			this.hasMore = getHasMore(page, totalPageCount);
+			this.apps = apps;
+			this.page = page;
+			this.headCells = headCells;
 		} catch (e) {
 			console.log(e);
 		} finally {
-			this.setIsLoading(false);
+			this.isLoading = false;
+		}
+	}
+
+	*fetchMoreShared(params) {
+		this.isLoadingMore = true;
+		try {
+			const response = yield AppsAPI.fetchShared(params);
+			console.log(response);
+			const {
+				page,
+				total_page: totalPageCount,
+				app: {app: apps}
+			} = response.data.result;
+
+			this.hasMore = getHasMore(page, totalPageCount);
+			this.apps = [...this.apps, ...apps];
+			this.page = page;
+		} catch (e) {
+			console.log(e);
+		} finally {
+			this.isLoadingMore = false;
 		}
 	}
 }

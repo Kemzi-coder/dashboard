@@ -7,31 +7,25 @@ class Auth {
 
 	isAuth = false;
 
-	isLoading = false;
+	isLoading = true;
 
 	constructor() {
 		makeAutoObservable(this);
-	}
-
-	setIsAuth(isAuth) {
-		this.isAuth = isAuth;
-	}
-
-	setUser(user) {
-		this.user = user;
 	}
 
 	setIsLoading(isLoading) {
 		this.isLoading = isLoading;
 	}
 
-	async login({username, password}, setError) {
+	*login({username, password}, setError) {
 		try {
-			const response = await AuthAPI.login({username, password});
+			const response = yield AuthAPI.login({username, password});
 			console.log(response);
+			const {user} = response.data.result;
+
 			localStorage.setItem("token", response.data.session.token);
-			this.setIsAuth(true);
-			this.setUser(response.data.user);
+			this.isAuth = true;
+			this.user = user;
 		} catch (e) {
 			console.log(e);
 			setError("response", {message: e.response.data.error.message});
@@ -39,9 +33,9 @@ class Auth {
 	}
 
 	// eslint-disable-next-line class-methods-use-this
-	async register({username, password}, setError, redirectToLoginForm) {
+	*register({username, password}, setError, redirectToLoginForm) {
 		try {
-			const response = await AuthAPI.register({username, password});
+			const response = yield AuthAPI.register({username, password});
 			console.log(response);
 			redirectToLoginForm();
 		} catch (e) {
@@ -49,24 +43,26 @@ class Auth {
 		}
 	}
 
-	async check() {
-		this.setIsLoading(true);
+	*check() {
+		this.isLoading = true;
 		try {
-			const response = await AuthAPI.check();
+			const response = yield AuthAPI.check();
 			console.log(response);
-			this.setIsAuth(true);
-			this.setUser(response.data.result.user);
+			const {user} = response.data.result;
+
+			this.isAuth = true;
+			this.user = user;
 		} catch (e) {
 			console.log(e);
 		} finally {
-			this.setIsLoading(false);
+			this.isLoading = false;
 		}
 	}
 
 	// eslint-disable-next-line class-methods-use-this
-	async changePassword(oldPass, newPass, setError) {
+	*changePassword(oldPass, newPass, setError) {
 		try {
-			const response = await AuthAPI.changePassword(oldPass, newPass);
+			const response = yield AuthAPI.changePassword(oldPass, newPass);
 			console.log(response);
 		} catch (e) {
 			setError("old_password", {
@@ -77,9 +73,9 @@ class Auth {
 	}
 
 	// eslint-disable-next-line class-methods-use-this
-	async changeUsername(username, setError) {
+	*changeUsername(username, setError) {
 		try {
-			const response = await AuthAPI.changeUsername(username);
+			const response = yield AuthAPI.changeUsername(username);
 			console.log(response);
 		} catch (e) {
 			setError("username", {
@@ -89,11 +85,13 @@ class Auth {
 		}
 	}
 
-	async uploadAvatar(file) {
+	*uploadAvatar(file) {
 		try {
-			const response = await FilesAPI.uploadAvatar(file);
+			const response = yield FilesAPI.uploadAvatar(file);
 			console.log(response);
-			this.setUser(response.data.result.user);
+			const {user} = response.data.result;
+
+			this.user = user;
 		} catch (e) {
 			console.log(e);
 		}
