@@ -20,7 +20,9 @@ const App = observer(() => {
 
 	return (
 		<BrowserRouter>
-			<AppRouter />
+			<div className="bg-primary">
+				<AppRouter />
+			</div>
 		</BrowserRouter>
 	);
 });
