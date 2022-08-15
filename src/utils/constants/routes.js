@@ -41,3 +41,6 @@ export const MAILING_ROUTE = "/mailing";
 export const LOGIN_ROUTE = "/login";
 
 export const REGISTER_ROUTE = "/register";
+
+// Chat
+export const CHAT_ROUTE = "/chat";

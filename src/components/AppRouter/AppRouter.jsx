@@ -11,6 +11,7 @@ import {
 	APPS_CREATE_ROUTE,
 	APPS_PRIVATE_ROUTE,
 	APPS_ROUTE,
+	CHAT_ROUTE,
 	HOME_ROUTE,
 	LOGIN_ROUTE,
 	PROXIES_CREATE_ROUTE,
@@ -34,6 +35,7 @@ import ProxiesTable from "../../views/Proxies/ProxiesTable/ProxiesTable";
 import SettingsNotifications from "../../views/Settings/SettingsNotifications/SettingsNotifications";
 import SettingsPage from "../../views/Settings/SettingsPage/SettingsPage";
 import SettingsProfileForm from "../../views/Settings/SettingsProfileForm/SettingsProfileForm";
+import ChatPage from "../../views/Chat/ChatPage/ChatPage";
 
 const AppRouter = observer(() => {
 	if (auth.isAuth) {
@@ -71,6 +73,7 @@ const AppRouter = observer(() => {
 					/>
 					<Route path="*" element={<Navigate to={SETTINGS_ROUTE} />} />
 				</Route>
+				<Route path={CHAT_ROUTE} element={<ChatPage />} />
 				<Route path="*" element={<Navigate to={HOME_ROUTE} />} />
 			</Routes>
 		);
