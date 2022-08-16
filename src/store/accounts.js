@@ -104,6 +104,22 @@ class Accounts {
 			this.isLoadingMore = false;
 		}
 	}
+
+	*fetchAccountToken(uuid, redirect) {
+		this.inAction = true;
+		try {
+			const response = yield AccountsAPI.fetchAccountToken(uuid);
+			console.log(response);
+			const {account_token: accountToken} = response.data.result;
+
+			localStorage.setItem("accountToken", accountToken);
+			redirect();
+		} catch (e) {
+			console.log(e);
+		} finally {
+			this.inAction = false;
+		}
+	}
 }
 
 export default new Accounts();
