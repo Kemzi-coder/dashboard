@@ -32,13 +32,8 @@ class Proxies {
 		try {
 			const response = yield ProxiesAPI.delete(uuid);
 			console.log(response);
-			const {
-				proxy: {
-					proxy: {uuid: resUuid}
-				}
-			} = response.data.result;
 
-			this.proxies = this.proxies.filter(proxy => proxy.uuid !== resUuid);
+			this.proxies = this.proxies.filter(proxy => proxy.uuid !== uuid);
 		} catch (e) {
 			console.log(e);
 		} finally {
