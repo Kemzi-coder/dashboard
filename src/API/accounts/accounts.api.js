@@ -19,6 +19,12 @@ class AccountsAPI {
 			{params: {table: true}}
 		);
 	}
+
+	static fetchAccountToken(uuid) {
+		return $api.get("account/get_account_token", {
+			params: {account_uuid: uuid}
+		});
+	}
 }
 
 export default AccountsAPI;
