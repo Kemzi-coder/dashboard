@@ -1,9 +1,11 @@
 import React from "react";
 import PropTypes from "prop-types";
 import classNames from "classnames";
+import {NavLink} from "react-router-dom";
 import Avatar from "../Avatar/Avatar";
+import {CHAT_ROUTE} from "../../utils/constants/routes";
 
-const ChatItem = ({isActive, title, lastMsgDate}) => {
+const ChatItem = ({isActive, title, lastMsgDate, chatId}) => {
 	const formattedDate = new Date(lastMsgDate).toLocaleString("en-US", {
 		hour: "numeric",
 		minute: "numeric",
@@ -17,10 +19,10 @@ const ChatItem = ({isActive, title, lastMsgDate}) => {
 				{"bg-accent": isActive, "hover:bg-primary-light": !isActive}
 			)}
 		>
-			<button
+			<NavLink
+				to={`${CHAT_ROUTE}/${chatId}`}
 				aria-label="chat"
 				className="absolute top-0 left-0 w-full h-full z-10"
-				type="button"
 			/>
 			<div className="flex overflow-hidden">
 				<Avatar
@@ -64,7 +66,8 @@ const ChatItem = ({isActive, title, lastMsgDate}) => {
 ChatItem.propTypes = {
 	isActive: PropTypes.bool,
 	title: PropTypes.string.isRequired,
-	lastMsgDate: PropTypes.string.isRequired
+	lastMsgDate: PropTypes.string.isRequired,
+	chatId: PropTypes.string.isRequired
 };
 
 ChatItem.defaultProps = {

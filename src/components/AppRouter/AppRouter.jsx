@@ -36,6 +36,7 @@ import SettingsNotifications from "../../views/Settings/SettingsNotifications/Se
 import SettingsPage from "../../views/Settings/SettingsPage/SettingsPage";
 import SettingsProfileForm from "../../views/Settings/SettingsProfileForm/SettingsProfileForm";
 import ChatPage from "../../views/Chat/ChatPage/ChatPage";
+import ChatBody from "../../views/Chat/ChatBody/ChatBody";
 
 const AppRouter = observer(() => {
 	if (auth.isAuth) {
@@ -73,7 +74,11 @@ const AppRouter = observer(() => {
 					/>
 					<Route path="*" element={<Navigate to={SETTINGS_ROUTE} />} />
 				</Route>
-				<Route path={CHAT_ROUTE} element={<ChatPage />} />
+				<Route path={CHAT_ROUTE} element={<ChatPage />}>
+					<Route index element={<ChatBody />} />
+					<Route path={`${CHAT_ROUTE}/:id`} element={<ChatBody />} />
+					<Route path="*" element={<Navigate to={CHAT_ROUTE} />} />
+				</Route>
 				<Route path="*" element={<Navigate to={HOME_ROUTE} />} />
 			</Routes>
 		);

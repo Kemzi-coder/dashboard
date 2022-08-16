@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import classNames from "classnames";
 import Avatar from "../Avatar/Avatar";
 
-const MessageItem = ({isMine, className}) => (
+const MessageItem = ({isMine, className, message}) => (
 	<div
 		className={classNames(
 			className,
@@ -23,17 +23,15 @@ const MessageItem = ({isMine, className}) => (
 				"bg-primary-light border-primary-lighter": !isMine
 			})}
 		>
-			Hello, Max! Hello, Max!Hello, Max!Hello, Max!Hello, Max!Hello, Max!Hello,
-			Max!Hello, Max!Hello, Max!Hello, Max!ax!Hello, Max!ax!Hello, Max!ax!Hello,
-			Max!ax!Hello, Max!ax!Hello, Max!ax!Hello, Max!ax!Hello, Max!ax!Hello,
-			Max!ax!Hello, Max!
+			{message}
 		</div>
 	</div>
 );
 
 MessageItem.propTypes = {
 	isMine: PropTypes.bool,
-	className: PropTypes.string
+	className: PropTypes.string,
+	message: PropTypes.string.isRequired
 };
 
 MessageItem.defaultProps = {
