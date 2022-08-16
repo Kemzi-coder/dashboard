@@ -9,9 +9,20 @@ const TableItemButtons = ({
 	enableIsEditable,
 	onDelete,
 	onCheck,
+	onOpen,
 	isEditAllowed
 }) => (
 	<TableCell role="presentation" className="flex">
+		{onOpen !== null && (
+			<TableButton
+				className="mr-3"
+				variant="success"
+				disabled={isLoading}
+				onClick={onOpen}
+			>
+				open
+			</TableButton>
+		)}
 		{onCheck !== null && (
 			<TableButton
 				className="mr-3"
@@ -57,13 +68,15 @@ TableItemButtons.propTypes = {
 	isLoading: PropTypes.bool.isRequired,
 	onEdit: PropTypes.func,
 	isEditable: PropTypes.bool.isRequired,
-	isEditAllowed: PropTypes.bool.isRequired
+	isEditAllowed: PropTypes.bool.isRequired,
+	onOpen: PropTypes.func
 };
 
 TableItemButtons.defaultProps = {
 	onDelete: null,
 	onCheck: null,
-	onEdit: null
+	onEdit: null,
+	onOpen: null
 };
 
 export default TableItemButtons;

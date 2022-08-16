@@ -12,6 +12,7 @@ const TableItem = ({
 	values,
 	onClick,
 	onDelete,
+	onOpen,
 	onEdit,
 	onCheck,
 	isActionsAllowed,
@@ -41,6 +42,7 @@ const TableItem = ({
 			(onEdit !== null || onDelete !== null || onCheck !== null) ? (
 				<TableItemButtons
 					onCheck={onCheck}
+					onOpen={onOpen}
 					isEditAllowed={values.some(value => value.is_editable === true)}
 					isEditable={isEditable}
 					isLoading={isLoading}
@@ -96,6 +98,7 @@ TableItem.propTypes = {
 	isActionsAllowed: PropTypes.bool,
 	onEdit: PropTypes.func,
 	onCheck: PropTypes.func,
+	onOpen: PropTypes.func,
 	isLoading: PropTypes.bool,
 	values: PropTypes.array.isRequired
 };
@@ -106,7 +109,8 @@ TableItem.defaultProps = {
 	onCheck: null,
 	isActionsAllowed: false,
 	isLoading: false,
-	onEdit: null
+	onEdit: null,
+	onOpen: null
 };
 
 export default TableItem;

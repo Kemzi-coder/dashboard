@@ -15,6 +15,7 @@ const ItemsTable = ({
 	headCells,
 	onEdit,
 	onDelete,
+	onOpen,
 	inAction,
 	onCheck
 }) => {
@@ -53,6 +54,7 @@ const ItemsTable = ({
 							onDelete={onDelete !== null ? () => onDelete(item.uuid) : null}
 							number={index + 1}
 							onClick={handleClick}
+							onOpen={onOpen !== null ? () => onOpen(item.uuid) : null}
 							isLoading={inAction}
 							values={item.values}
 							onCheck={onCheck !== null ? () => onCheck(item.uuid) : null}
@@ -74,13 +76,15 @@ ItemsTable.propTypes = {
 	headCells: PropTypes.array.isRequired,
 	onEdit: PropTypes.func,
 	onDelete: PropTypes.func,
-	onCheck: PropTypes.func
+	onCheck: PropTypes.func,
+	onOpen: PropTypes.func
 };
 
 ItemsTable.defaultProps = {
 	onEdit: null,
 	onDelete: null,
-	onCheck: null
+	onCheck: null,
+	onOpen: null
 };
 
 export default ItemsTable;
