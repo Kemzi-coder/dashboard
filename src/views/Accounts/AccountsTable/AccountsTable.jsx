@@ -1,17 +1,19 @@
 import {observer} from "mobx-react-lite";
 import React, {useCallback, useEffect, useMemo, useState} from "react";
-import {useLocation} from "react-router-dom";
+import {useLocation, useNavigate} from "react-router-dom";
 import accounts from "../../../store/accounts";
 import {
 	ACCOUNTS_2FA_ROUTE,
 	ACCOUNTS_BAD_ROUTE,
 	ACCOUNTS_GOOD_ROUTE,
-	ACCOUNTS_SMS_ROUTE
+	ACCOUNTS_SMS_ROUTE,
+	CHAT_ROUTE
 } from "../../../utils/constants/routes";
 import ItemsTable from "../../../components/ItemsTable/ItemsTable";
 
 const AccountsTable = observer(() => {
 	const location = useLocation();
+	const navigate = useNavigate();
 	const [status, setStatus] = useState("");
 
 	const params = useMemo(
@@ -49,15 +51,22 @@ const AccountsTable = observer(() => {
 
 	useEffect(() => () => accounts.setIsLoading(true), []);
 
+	const redirectToChat = () =>
+		navigate(CHAT_ROUTE, {state: {prevPath: location.pathname}});
+
 	const handleEdit = uuid => async account => accounts.edit(uuid, account);
 
 	const handleDelete = async uuid => accounts.delete(uuid);
+
+	const handleOpen = async uuid =>
+		accounts.fetchAccountToken(uuid, redirectToChat);
 
 	return (
 		<ItemsTable
 			isLoading={accounts.isLoading}
 			isLoadingMore={accounts.isLoadingMore}
 			onEdit={handleEdit}
+			onOpen={handleOpen}
 			onDelete={handleDelete}
 			fetchMore={fetchMore}
 			headCells={accounts.headCells}
