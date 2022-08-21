@@ -1,7 +1,7 @@
 import $api from "../../axios";
 
 class StatsAPI {
-	static fetchAll() {
+	static loadAll() {
 		return $api.get("account/get_statistics");
 	}
 }

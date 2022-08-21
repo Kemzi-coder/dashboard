@@ -1,7 +1,7 @@
 import $api from "../../axios";
 
 class MessagesAPI {
-	static fetchByChatId(chatId) {
+	static loadByChatId(chatId) {
 		return $api.get("account/get_messages", {
 			params: {
 				chat: chatId,

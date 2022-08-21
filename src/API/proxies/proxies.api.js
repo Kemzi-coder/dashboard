@@ -1,11 +1,11 @@
 import $api from "../../axios";
 
 class ProxiesAPI {
-	static fetchPrivate(params) {
+	static loadPrivate(params) {
 		return $api.get("proxy/get_proxy_list", {params});
 	}
 
-	static fetchShared(params) {
+	static loadShared(params) {
 		return $api.get("proxy/get_shared_proxy_list", {params});
 	}
 

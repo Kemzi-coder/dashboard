@@ -1,7 +1,7 @@
 import $api from "../../axios/index";
 
 class AccountsAPI {
-	static fetchAll(params) {
+	static loadAll(params) {
 		return $api.get("account/get_account_list", {params});
 	}
 
@@ -20,7 +20,7 @@ class AccountsAPI {
 		);
 	}
 
-	static fetchAccountToken(uuid) {
+	static loadAccountToken(uuid) {
 		return $api.get("account/get_account_token", {
 			params: {account_uuid: uuid}
 		});

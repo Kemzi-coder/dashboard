@@ -1,23 +1,23 @@
 import {makeAutoObservable} from "mobx";
-import NotificationSettingsAPI from "../API/notificationSettings/notificationSettings.api";
+import SettingsApi from "../API/settings/settings.api";
 
-class NotificationSettings {
+class SettingsState {
 	settings = [];
 
-	isLoading = true;
+	isLoading = false;
 
 	constructor() {
 		makeAutoObservable(this);
 	}
 
-	setIsLoading(isLoading) {
-		this.isLoading = isLoading;
+	clear() {
+		this.settings = [];
 	}
 
-	*fetch() {
+	*loadNotification() {
 		this.isLoading = true;
 		try {
-			const response = yield NotificationSettingsAPI.fetch();
+			const response = yield SettingsApi.loadNotification();
 			console.log(response);
 			const {contact: settings} = response.data.result;
 
@@ -29,9 +29,9 @@ class NotificationSettings {
 		}
 	}
 
-	*edit(settings) {
+	*editNotification(settings) {
 		try {
-			const response = yield NotificationSettingsAPI.edit(settings);
+			const response = yield SettingsApi.editNotification(settings);
 			console.log(response);
 			const {contact: resSettings} = response.data.result;
 
@@ -42,4 +42,4 @@ class NotificationSettings {
 	}
 }
 
-export default new NotificationSettings();
+export default new SettingsState();

@@ -2,19 +2,24 @@ import React, {useEffect} from "react";
 import "./app.css";
 import {BrowserRouter} from "react-router-dom";
 import {observer} from "mobx-react-lite";
+import {autorun} from "mobx";
 import AppRouter from "./components/AppRouter/AppRouter";
-import auth from "./store/auth";
+import authState from "./store/auth";
 
 const App = observer(() => {
-	useEffect(() => {
-		if (localStorage.getItem("token")) {
-			auth.check();
-		} else {
-			auth.setIsLoading(false);
-		}
-	}, []);
+	useEffect(
+		() =>
+			autorun(() => {
+				if (localStorage.getItem("token")) {
+					authState.check();
+				} else {
+					authState.setIsLoading(false);
+				}
+			}),
+		[]
+	);
 
-	if (auth.isLoading) {
+	if (authState.isLoading) {
 		return "Loading...";
 	}
 

@@ -1,7 +1,7 @@
 import {observer} from "mobx-react-lite";
 import React from "react";
 import {Navigate, Route, Routes} from "react-router-dom";
-import auth from "../../store/auth";
+import authState from "../../store/auth";
 import {
 	ACCOUNTS_2FA_ROUTE,
 	ACCOUNTS_BAD_ROUTE,
@@ -39,7 +39,7 @@ import ChatPage from "../../views/Chat/ChatPage/ChatPage";
 import ChatBody from "../../views/Chat/ChatBody/ChatBody";
 
 const AppRouter = observer(() => {
-	if (auth.isAuth) {
+	if (authState.isAuth) {
 		return (
 			<Routes>
 				<Route path={HOME_ROUTE} element={<HomePage />}>

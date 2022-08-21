@@ -2,7 +2,7 @@ import {makeAutoObservable} from "mobx";
 import AuthAPI from "../API/auth/auth.api";
 import FilesAPI from "../API/files/files.api";
 
-class Auth {
+class AuthState {
 	user = {};
 
 	isAuth = false;
@@ -98,4 +98,4 @@ class Auth {
 	}
 }
 
-export default new Auth();
+export default new AuthState();

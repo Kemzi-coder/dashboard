@@ -6,13 +6,13 @@ const InfiniteScrollList = ({
 	children,
 	isLoading,
 	hasMore,
-	onFetchMore,
+	onLoadMore,
 	isLoadingMore,
 	length
 }) => {
 	const lastElement = useRef(null);
 
-	useObserver(lastElement, hasMore, isLoading, onFetchMore);
+	useObserver(lastElement, hasMore, isLoadingMore, onLoadMore);
 
 	return (
 		<>
@@ -33,7 +33,7 @@ InfiniteScrollList.propTypes = {
 	children: PropTypes.node.isRequired,
 	isLoading: PropTypes.bool.isRequired,
 	isLoadingMore: PropTypes.bool.isRequired,
-	onFetchMore: PropTypes.func.isRequired,
+	onLoadMore: PropTypes.func.isRequired,
 	hasMore: PropTypes.bool.isRequired,
 	length: PropTypes.number.isRequired
 };

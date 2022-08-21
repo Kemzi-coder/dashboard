@@ -1,11 +1,11 @@
 import $api from "../../axios";
 
 class AppsAPI {
-	static fetchPrivate(params) {
+	static loadPrivate(params) {
 		return $api.get("telegram_app/get_app_list", {params});
 	}
 
-	static fetchShared(params) {
+	static loadShared(params) {
 		return $api.get("telegram_app/get_shared_app_list", {params});
 	}
 

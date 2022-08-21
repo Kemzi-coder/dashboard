@@ -10,7 +10,7 @@ const ItemsTable = ({
 	hasMore,
 	isLoading,
 	isLoadingMore,
-	fetchMore,
+	onLoadMore,
 	items,
 	headCells,
 	onEdit,
@@ -27,7 +27,7 @@ const ItemsTable = ({
 			hasMore={hasMore}
 			isLoading={isLoading}
 			isLoadingMore={isLoadingMore}
-			onFetchMore={fetchMore}
+			onLoadMore={onLoadMore}
 			length={items.length}
 		>
 			<CopyModal
@@ -71,7 +71,7 @@ ItemsTable.propTypes = {
 	isLoading: PropTypes.bool.isRequired,
 	isLoadingMore: PropTypes.bool.isRequired,
 	inAction: PropTypes.bool.isRequired,
-	fetchMore: PropTypes.func.isRequired,
+	onLoadMore: PropTypes.func.isRequired,
 	items: PropTypes.array.isRequired,
 	headCells: PropTypes.array.isRequired,
 	onEdit: PropTypes.func,

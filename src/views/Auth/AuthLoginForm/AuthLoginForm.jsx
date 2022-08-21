@@ -6,7 +6,7 @@ import Button from "../../../components/Button/Button";
 import FormTextField from "../../../components/FormTextField/FormTextField";
 import FormFields from "../../../components/FormFields/FormFields";
 import {REGISTER_ROUTE} from "../../../utils/constants/routes";
-import auth from "../../../store/auth";
+import authState from "../../../store/auth";
 import authFormValidation from "../../../validation/auth";
 
 const AuthLoginForm = () => {
@@ -19,7 +19,7 @@ const AuthLoginForm = () => {
 	} = useForm({mode: "all"});
 
 	const onSubmit = async data => {
-		await auth.login(data, setError);
+		await authState.login(data, setError);
 	};
 
 	const handleClick = () => clearErrors("response");

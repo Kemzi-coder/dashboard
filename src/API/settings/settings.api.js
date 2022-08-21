@@ -1,13 +1,13 @@
 import $api from "../../axios";
 
-class NotificationSettingsAPI {
-	static fetch() {
+class SettingsApi {
+	static loadNotification() {
 		return $api.get("service/get_notify_settings");
 	}
 
-	static edit(settings) {
+	static editNotification(settings) {
 		return $api.post("service/edit_notify_settings", settings);
 	}
 }
 
-export default NotificationSettingsAPI;
+export default SettingsApi;

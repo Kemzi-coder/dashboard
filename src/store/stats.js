@@ -1,23 +1,23 @@
 import {makeAutoObservable} from "mobx";
 import StatsAPI from "../API/stats/stats.api";
 
-class Stats {
-	stats = {};
+class StatsState {
+	stats = [];
 
-	isLoading = true;
+	isLoading = false;
 
 	constructor() {
 		makeAutoObservable(this);
 	}
 
-	setIsLoading(isLoading) {
-		this.isLoading = isLoading;
+	clear() {
+		this.stats = [];
 	}
 
-	*fetchAll() {
+	*loadAll() {
 		this.isLoading = true;
 		try {
-			const response = yield StatsAPI.fetchAll();
+			const response = yield StatsAPI.loadAll();
 			console.log(response);
 			const {accounts: stats} = response.data.result;
 			this.stats = stats;
@@ -29,4 +29,4 @@ class Stats {
 	}
 }
 
-export default new Stats();
+export default new StatsState();

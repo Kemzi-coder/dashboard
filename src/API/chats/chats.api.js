@@ -1,9 +1,9 @@
 import $api from "../../axios";
 
 class ChatsAPI {
-	static fetch() {
+	static loadAll(params) {
 		return $api.get("account/get_chats", {
-			params: {account_token: localStorage.getItem("accountToken")}
+			params: {...params, account_token: localStorage.getItem("accountToken")}
 		});
 	}
 }
