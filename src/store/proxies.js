@@ -1,11 +1,12 @@
 import {makeAutoObservable} from "mobx";
 import ProxiesAPI from "../API/proxies/proxies.api";
 import getHasMore from "../utils/helpers/getHasMore";
+import checkIsFirstLoad from "../utils/helpers/checkIsFirstLoad";
 
-class Proxies {
+class ProxiesState {
 	proxies = [];
 
-	isLoading = true;
+	isLoading = false;
 
 	isLoadingMore = false;
 
@@ -13,7 +14,7 @@ class Proxies {
 
 	page = 1;
 
-	limit = 10;
+	limit = 5;
 
 	inAction = false;
 
@@ -23,8 +24,20 @@ class Proxies {
 		makeAutoObservable(this, {}, {autoBind: true});
 	}
 
-	setIsLoading(isLoading) {
-		this.isLoading = isLoading;
+	setPage(page) {
+		this.page = page;
+	}
+
+	clear() {
+		this.proxies = [];
+		this.headCells = [];
+	}
+
+	clearAll() {
+		this.proxies = [];
+		this.headCells = [];
+		this.hasMore = false;
+		this.page = 1;
 	}
 
 	*delete(uuid) {
@@ -97,10 +110,16 @@ class Proxies {
 		}
 	}
 
-	*fetchPrivate(params) {
-		this.isLoading = true;
+	*loadPrivate(params) {
+		const isFirstLoad = checkIsFirstLoad(params.page);
+
+		if (isFirstLoad) {
+			this.isLoading = true;
+		} else {
+			this.isLoadingMore = true;
+		}
 		try {
-			const response = yield ProxiesAPI.fetchPrivate(params);
+			const response = yield ProxiesAPI.loadPrivate(params);
 			console.log(response);
 			const {
 				page,
@@ -108,42 +127,35 @@ class Proxies {
 				proxy: {proxy: proxies, table_names: headCells}
 			} = response.data.result;
 
+			if (isFirstLoad) {
+				this.proxies = proxies;
+			} else {
+				this.proxies = [...this.proxies, ...proxies];
+			}
+
 			this.hasMore = getHasMore(page, totalPageCount);
-			this.proxies = proxies;
-			this.page = page;
 			this.headCells = headCells;
 		} catch (e) {
 			console.log(e);
 		} finally {
-			this.isLoading = false;
+			if (isFirstLoad) {
+				this.isLoading = false;
+			} else {
+				this.isLoadingMore = false;
+			}
 		}
 	}
 
-	*fetchMorePrivate(params) {
-		this.isLoadingMore = true;
-		try {
-			const response = yield ProxiesAPI.fetchPrivate(params);
-			console.log(response);
-			const {
-				page,
-				total_page: totalPageCount,
-				proxy: {proxy: proxies}
-			} = response.data.result;
+	*loadShared(params) {
+		const isFirstLoad = checkIsFirstLoad(params.page);
 
-			this.hasMore = getHasMore(page, totalPageCount);
-			this.proxies = [...this.proxies, ...proxies];
-			this.page = page;
-		} catch (e) {
-			console.log(e);
-		} finally {
-			this.isLoadingMore = false;
+		if (isFirstLoad) {
+			this.isLoading = true;
+		} else {
+			this.isLoadingMore = true;
 		}
-	}
-
-	*fetchShared(params) {
-		this.isLoading = true;
 		try {
-			const response = yield ProxiesAPI.fetchShared(params);
+			const response = yield ProxiesAPI.loadShared(params);
 			console.log(response);
 			const {
 				page,
@@ -151,37 +163,24 @@ class Proxies {
 				proxy: {proxy: proxies, table_names: headCells}
 			} = response.data.result;
 
+			if (isFirstLoad) {
+				this.proxies = proxies;
+			} else {
+				this.proxies = [...this.proxies, ...proxies];
+			}
+
 			this.hasMore = getHasMore(page, totalPageCount);
-			this.proxies = proxies;
-			this.page = page;
 			this.headCells = headCells;
 		} catch (e) {
 			console.log(e);
 		} finally {
-			this.isLoading = false;
-		}
-	}
-
-	*fetchMoreShared(params) {
-		this.isLoadingMore = true;
-		try {
-			const response = yield ProxiesAPI.fetchShared(params);
-			console.log(response);
-			const {
-				page,
-				total_page: totalPageCount,
-				proxy: {proxy: proxies}
-			} = response.data.result;
-
-			this.hasMore = getHasMore(page, totalPageCount);
-			this.proxies = [...this.proxies, ...proxies];
-			this.page = page;
-		} catch (e) {
-			console.log(e);
-		} finally {
-			this.isLoadingMore = false;
+			if (isFirstLoad) {
+				this.isLoading = false;
+			} else {
+				this.isLoadingMore = false;
+			}
 		}
 	}
 }
 
-export default new Proxies();
+export default new ProxiesState();

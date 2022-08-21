@@ -1,11 +1,12 @@
 import {makeAutoObservable} from "mobx";
 import AppsAPI from "../API/apps/apps.api";
 import getHasMore from "../utils/helpers/getHasMore";
+import checkIsFirstLoad from "../utils/helpers/checkIsFirstLoad";
 
-class Apps {
+class AppsState {
 	apps = [];
 
-	isLoading = true;
+	isLoading = false;
 
 	isLoadingMore = false;
 
@@ -13,7 +14,7 @@ class Apps {
 
 	page = 1;
 
-	limit = 10;
+	limit = 5;
 
 	inAction = false;
 
@@ -23,8 +24,20 @@ class Apps {
 		makeAutoObservable(this, {}, {autoBind: true});
 	}
 
-	setIsLoading(isLoading) {
-		this.isLoading = isLoading;
+	setPage(page) {
+		this.page = page;
+	}
+
+	clear() {
+		this.apps = [];
+		this.headCells = [];
+	}
+
+	clearAll() {
+		this.apps = [];
+		this.headCells = [];
+		this.hasMore = false;
+		this.page = 1;
 	}
 
 	*delete(uuid) {
@@ -82,52 +95,16 @@ class Apps {
 		}
 	}
 
-	*fetchPrivate(params) {
-		this.isLoading = true;
-		try {
-			const response = yield AppsAPI.fetchPrivate(params);
-			const {
-				page,
-				total_page: totalPageCount,
-				app: {app: apps, table_names: headCells}
-			} = response.data.result;
+	*loadPrivate(params) {
+		const isFirstLoad = checkIsFirstLoad(params.page);
 
-			this.hasMore = getHasMore(page, totalPageCount);
-			this.apps = apps;
-			this.page = page;
-			this.headCells = headCells;
-		} catch (e) {
-			console.log(e);
-		} finally {
-			this.isLoading = false;
+		if (isFirstLoad) {
+			this.isLoading = true;
+		} else {
+			this.isLoadingMore = true;
 		}
-	}
-
-	*fetchMorePrivate(params) {
-		this.isLoadingMore = true;
 		try {
-			const response = yield AppsAPI.fetchPrivate(params);
-			console.log(response);
-			const {
-				page,
-				total_page: totalPageCount,
-				app: {app: apps}
-			} = response.data.result;
-
-			this.hasMore = getHasMore(page, totalPageCount);
-			this.apps = [...this.apps, ...apps];
-			this.page = page;
-		} catch (e) {
-			console.log(e);
-		} finally {
-			this.isLoadingMore = false;
-		}
-	}
-
-	*fetchShared(params) {
-		this.isLoading = true;
-		try {
-			const response = yield AppsAPI.fetchShared(params);
+			const response = yield AppsAPI.loadPrivate(params);
 			console.log(response);
 			const {
 				page,
@@ -135,37 +112,60 @@ class Apps {
 				app: {app: apps, table_names: headCells}
 			} = response.data.result;
 
+			if (isFirstLoad) {
+				this.apps = apps;
+			} else {
+				this.apps = [...this.apps, ...apps];
+			}
+
 			this.hasMore = getHasMore(page, totalPageCount);
-			this.apps = apps;
-			this.page = page;
 			this.headCells = headCells;
 		} catch (e) {
 			console.log(e);
 		} finally {
-			this.isLoading = false;
+			if (isFirstLoad) {
+				this.isLoading = false;
+			} else {
+				this.isLoadingMore = false;
+			}
 		}
 	}
 
-	*fetchMoreShared(params) {
-		this.isLoadingMore = true;
+	*loadShared(params) {
+		const isFirstLoad = checkIsFirstLoad(params.page);
+
+		if (isFirstLoad) {
+			this.isLoading = true;
+		} else {
+			this.isLoadingMore = true;
+		}
 		try {
-			const response = yield AppsAPI.fetchShared(params);
+			const response = yield AppsAPI.loadShared(params);
 			console.log(response);
 			const {
 				page,
 				total_page: totalPageCount,
-				app: {app: apps}
+				app: {app: apps, table_names: headCells}
 			} = response.data.result;
 
+			if (isFirstLoad) {
+				this.apps = apps;
+			} else {
+				this.apps = [...this.apps, ...apps];
+			}
+
 			this.hasMore = getHasMore(page, totalPageCount);
-			this.apps = [...this.apps, ...apps];
-			this.page = page;
+			this.headCells = headCells;
 		} catch (e) {
 			console.log(e);
 		} finally {
-			this.isLoadingMore = false;
+			if (isFirstLoad) {
+				this.isLoading = false;
+			} else {
+				this.isLoadingMore = false;
+			}
 		}
 	}
 }
 
-export default new Apps();
+export default new AppsState();

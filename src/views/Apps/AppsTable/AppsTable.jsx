@@ -1,49 +1,48 @@
 import {observer} from "mobx-react-lite";
-import React, {useCallback, useEffect, useMemo} from "react";
+import React, {useEffect} from "react";
+import {autorun} from "mobx";
 import ItemsTable from "../../../components/ItemsTable/ItemsTable";
-import useFetchFns from "../../../hooks/useFetchFns.hook";
-import apps from "../../../store/apps";
+import useLoadFns from "../../../hooks/useLoadFns.hook";
+import appsState from "../../../store/apps";
 import {APPS_PRIVATE_ROUTE, APPS_ROUTE} from "../../../utils/constants/routes";
 
 const AppsTable = observer(() => {
-	const params = useMemo(
-		() => ({
-			page: 1,
-			per_page: apps.limit,
-			table: true
-		}),
-		[]
+	const loadApps = useLoadFns(
+		{
+			[APPS_PRIVATE_ROUTE]: appsState.loadPrivate,
+			[APPS_ROUTE]: appsState.loadShared
+		},
+		appsState.clearAll,
+		appsState.clear
 	);
 
-	const [fetchApps, fetchMoreApps] = useFetchFns({
-		[APPS_PRIVATE_ROUTE]: [apps.fetchPrivate, apps.fetchMorePrivate],
-		[APPS_ROUTE]: [apps.fetchShared, apps.fetchMoreShared]
-	});
-
-	useEffect(() => {
-		fetchApps(params);
-	}, [fetchApps, params]);
-
-	useEffect(() => () => apps.setIsLoading(true), []);
-
-	const fetchMore = useCallback(
-		() => fetchMoreApps({...params, page: apps.page + 1}),
-		[fetchMoreApps, params]
+	useEffect(
+		() =>
+			autorun(() =>
+				loadApps({
+					page: appsState.page,
+					per_page: appsState.limit,
+					table: true
+				})
+			),
+		[loadApps]
 	);
 
-	const handleDelete = async uuid => apps.delete(uuid);
+	const handleLoadMore = () => appsState.setPage(appsState.page + 1);
 
-	const handleEdit = uuid => async proxy => apps.edit(uuid, proxy);
+	const handleDelete = async uuid => appsState.delete(uuid);
+
+	const handleEdit = uuid => async proxy => appsState.edit(uuid, proxy);
 
 	return (
 		<ItemsTable
-			fetchMore={fetchMore}
-			hasMore={apps.hasMore}
-			headCells={apps.headCells}
-			inAction={apps.inAction}
-			isLoading={apps.isLoading}
-			isLoadingMore={apps.isLoadingMore}
-			items={apps.apps}
+			onLoadMore={handleLoadMore}
+			hasMore={appsState.hasMore}
+			headCells={appsState.headCells}
+			inAction={appsState.inAction}
+			isLoading={appsState.isLoading}
+			isLoadingMore={appsState.isLoadingMore}
+			items={appsState.apps}
 			onDelete={handleDelete}
 			onEdit={handleEdit}
 		/>

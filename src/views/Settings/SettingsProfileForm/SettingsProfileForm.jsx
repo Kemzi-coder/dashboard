@@ -5,7 +5,7 @@ import Button from "../../../components/Button/Button";
 import FormFields from "../../../components/FormFields/FormFields";
 import FormTextField from "../../../components/FormTextField/FormTextField";
 import {profileSettingsFormValidation} from "../../../validation/settings";
-import auth from "../../../store/auth";
+import authState from "../../../store/auth";
 import Avatar from "../../../components/Avatar/Avatar";
 
 const SettingsProfileForm = observer(() => {
@@ -22,18 +22,21 @@ const SettingsProfileForm = observer(() => {
 
 	const onSubmit = async data => {
 		if (dirtyFields.username) {
-			setRequests([...requests, auth.changeUsername(data.username, setError)]);
+			setRequests([
+				...requests,
+				authState.changeUsername(data.username, setError)
+			]);
 		}
 
 		if (dirtyFields.old_password && dirtyFields.new_password) {
 			setRequests([
 				...requests,
-				auth.changePassword(data.old_password, data.new_password, setError)
+				authState.changePassword(data.old_password, data.new_password, setError)
 			]);
 		}
 
 		if (dirtyFields.avatar_url) {
-			setRequests([...requests, auth.uploadAvatar(data.avatar_file)]);
+			setRequests([...requests, authState.uploadAvatar(data.avatar_file)]);
 		}
 
 		await Promise.all(requests);
@@ -60,7 +63,7 @@ const SettingsProfileForm = observer(() => {
 				<form className="max-w-sm mr-16" onSubmit={handleSubmit(onSubmit)}>
 					<FormFields className="mb-6" register={register} errors={errors}>
 						<FormTextField
-							defaultValue={auth.user.username}
+							defaultValue={authState.user.username}
 							placeholder="Username"
 							name="username"
 							options={profileSettingsFormValidation.username}
@@ -96,8 +99,8 @@ const SettingsProfileForm = observer(() => {
 						className="mb-4"
 						width={80}
 						height={80}
-						imagePath={watch("avatar_url") || auth.user.avatar}
-						username={auth.user.username}
+						imagePath={watch("avatar_url") || authState.user.avatar}
+						username={authState.user.username}
 					/>
 					<Button onClick={handleClick} size="medium">
 						Upload photo

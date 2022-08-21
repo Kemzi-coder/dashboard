@@ -1,9 +1,12 @@
 import {makeAutoObservable} from "mobx";
 import ChatsAPI from "../API/chats/chats.api";
 import getHasMore from "../utils/helpers/getHasMore";
+import checkIsFirstLoad from "../utils/helpers/checkIsFirstLoad";
 
-class Chats {
-	isLoading = true;
+class ChatsState {
+	isLoading = false;
+
+	isLoadingMore = false;
 
 	chats = [];
 
@@ -17,22 +20,46 @@ class Chats {
 		makeAutoObservable(this);
 	}
 
-	*fetch() {
-		this.isLoading = true;
+	setPage(page) {
+		this.page = page;
+	}
+
+	clear() {
+		this.chats = [];
+		this.hasMore = false;
+		this.page = 1;
+	}
+
+	*loadAll(params) {
+		const isFirstLoad = checkIsFirstLoad(params.page);
+
+		if (isFirstLoad) {
+			this.isLoading = true;
+		} else {
+			this.isLoadingMore = true;
+		}
 		try {
-			const response = yield ChatsAPI.fetch();
+			const response = yield ChatsAPI.loadAll(params);
 			console.log(response);
 			const {chats, total_page: totalPageCount, page} = response.data.result;
 
+			if (isFirstLoad) {
+				this.chats = chats;
+			} else {
+				this.chats = [...this.chats, ...chats];
+			}
+
 			this.hasMore = getHasMore(page, totalPageCount);
-			this.page = page;
-			this.chats = chats;
 		} catch (e) {
 			console.log(e);
 		} finally {
-			this.isLoading = false;
+			if (isFirstLoad) {
+				this.isLoading = false;
+			} else {
+				this.isLoadingMore = false;
+			}
 		}
 	}
 }
 
-export default new Chats();
+export default new ChatsState();

@@ -4,16 +4,20 @@ import MessagesAPI from "../API/messages/messages.api";
 class Messages {
 	messages = [];
 
-	isLoading = true;
+	isLoading = false;
 
 	constructor() {
 		makeAutoObservable(this);
 	}
 
-	*fetchByChatId(chatId) {
+	clear() {
+		this.messages = [];
+	}
+
+	*loadByChatId(chatId) {
 		this.isLoading = true;
 		try {
-			const response = yield MessagesAPI.fetchByChatId(chatId);
+			const response = yield MessagesAPI.loadByChatId(chatId);
 			console.log(response);
 			const {messages} = response.data.result;
 

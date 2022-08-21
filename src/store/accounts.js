@@ -1,11 +1,12 @@
 import {makeAutoObservable} from "mobx";
 import AccountsAPI from "../API/accounts/accounts.api";
 import getHasMore from "../utils/helpers/getHasMore";
+import checkIsFirstLoad from "../utils/helpers/checkIsFirstLoad";
 
-class Accounts {
+class AccountsState {
 	accounts = [];
 
-	isLoading = true;
+	isLoading = false;
 
 	isLoadingMore = false;
 
@@ -17,14 +18,26 @@ class Accounts {
 
 	inAction = false;
 
-	limit = 10;
+	limit = 5;
 
 	constructor() {
 		makeAutoObservable(this, {}, {autoBind: true});
 	}
 
-	setIsLoading(isLoading) {
-		this.isLoading = isLoading;
+	setPage(page) {
+		this.page = page;
+	}
+
+	clear() {
+		this.accounts = [];
+		this.headCells = [];
+	}
+
+	clearAll() {
+		this.accounts = [];
+		this.headCells = [];
+		this.hasMore = false;
+		this.page = 1;
 	}
 
 	*delete(uuid) {
@@ -62,10 +75,16 @@ class Accounts {
 		}
 	}
 
-	*fetchAll(params) {
-		this.isLoading = true;
+	*loadAll(params) {
+		const isFirstLoad = checkIsFirstLoad(params.page);
+
+		if (isFirstLoad) {
+			this.isLoading = true;
+		} else {
+			this.isLoadingMore = true;
+		}
 		try {
-			const response = yield AccountsAPI.fetchAll(params);
+			const response = yield AccountsAPI.loadAll(params);
 			console.log(response);
 			const {
 				page,
@@ -73,42 +92,32 @@ class Accounts {
 				accounts: {accounts, table_names: headCells}
 			} = response.data.result;
 
+			if (isFirstLoad) {
+				this.accounts = accounts;
+			} else {
+				this.accounts = [...this.accounts, ...accounts];
+			}
+
 			this.hasMore = getHasMore(page, totalPageCount);
-			this.accounts = accounts;
-			this.page = page;
-			this.headCells = headCells;
+
+			if (isFirstLoad) {
+				this.headCells = headCells;
+			}
 		} catch (e) {
 			console.log(e);
 		} finally {
-			this.isLoading = false;
+			if (isFirstLoad) {
+				this.isLoading = false;
+			} else {
+				this.isLoadingMore = false;
+			}
 		}
 	}
 
-	*fetchMore(params) {
-		this.isLoadingMore = true;
-		try {
-			const response = yield AccountsAPI.fetchAll(params);
-			console.log(response);
-			const {
-				page,
-				total_page: totalPageCount,
-				accounts: {accounts}
-			} = response.data.result;
-
-			this.hasMore = getHasMore(page, totalPageCount);
-			this.accounts = [...this.accounts, ...accounts];
-			this.page = page;
-		} catch (e) {
-			console.log(e);
-		} finally {
-			this.isLoadingMore = false;
-		}
-	}
-
-	*fetchAccountToken(uuid, redirect) {
+	*loadAccountToken(uuid, redirect) {
 		this.inAction = true;
 		try {
-			const response = yield AccountsAPI.fetchAccountToken(uuid);
+			const response = yield AccountsAPI.loadAccountToken(uuid);
 			console.log(response);
 			const {account_token: accountToken} = response.data.result;
 
@@ -122,4 +131,4 @@ class Accounts {
 	}
 }
 
-export default new Accounts();
+export default new AccountsState();

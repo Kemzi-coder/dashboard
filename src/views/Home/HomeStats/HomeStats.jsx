@@ -4,12 +4,12 @@ import {
 	MdOutlineKeyboardArrowLeft,
 	MdOutlineKeyboardArrowRight
 } from "react-icons/md";
+import {autorun} from "mobx";
 import StatItem from "../../../components/StatItem/StatItem";
-import stats from "../../../store/stats";
+import statsState from "../../../store/stats";
 
 const HomeStats = observer(() => {
 	const [slideIndex, setSlideIndex] = useState(0);
-	const statKeys = Object.keys(stats.stats);
 
 	const slidesPerView = 5;
 	const slideWidth = 100 / slidesPerView;
@@ -18,22 +18,27 @@ const HomeStats = observer(() => {
 	const wrapperTransform = `translateX(-${slideWidth * slideIndex}%)`;
 	const wrapperMargin = `0 -${spaceBetween / 2}px`;
 
-	useEffect(() => {
-		const lastIndex = statKeys.length - slidesPerView;
+	const statKeys = Object.keys(statsState.stats);
 
-		if (slideIndex < 0) {
-			setSlideIndex(lastIndex);
-		}
+	useEffect(() => autorun(() => statsState.loadAll()), []);
 
-		if (slideIndex > lastIndex) {
-			setSlideIndex(0);
-		}
-	}, [slideIndex, statKeys.length]);
+	useEffect(
+		() =>
+			autorun(() => {
+				const lastIndex = statKeys.length - slidesPerView;
 
-	useEffect(() => {
-		stats.fetchAll();
-		return () => stats.setIsLoading(true);
-	}, []);
+				if (slideIndex < 0) {
+					setSlideIndex(lastIndex);
+				}
+
+				if (slideIndex > lastIndex) {
+					setSlideIndex(0);
+				}
+			}),
+		[slideIndex, statKeys.length]
+	);
+
+	useEffect(() => () => statsState.clear(), []);
 
 	const handleNext = () => setSlideIndex(prev => prev + 1);
 	const handlePrev = () => setSlideIndex(prev => prev - 1);
@@ -53,7 +58,7 @@ const HomeStats = observer(() => {
 					</div>
 				)}
 			</div>
-			{stats.isLoading ? (
+			{statsState.isLoading ? (
 				"Loading..."
 			) : (
 				<div className="overflow-hidden mx-auto relative">
@@ -62,7 +67,7 @@ const HomeStats = observer(() => {
 						style={{transform: wrapperTransform, margin: wrapperMargin}}
 					>
 						{statKeys.map(key => {
-							const value = stats.stats[key];
+							const value = statsState.stats[key];
 							const title = `${key} Accounts`;
 							const padding = `0 ${spaceBetween / 2}px`;
 							const width = `${slideWidth}%`;

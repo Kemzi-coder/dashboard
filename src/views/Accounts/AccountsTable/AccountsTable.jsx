@@ -1,78 +1,73 @@
 import {observer} from "mobx-react-lite";
-import React, {useCallback, useEffect, useMemo, useState} from "react";
+import React, {useEffect} from "react";
 import {useLocation, useNavigate} from "react-router-dom";
-import accounts from "../../../store/accounts";
+import {autorun} from "mobx";
+import accountsState from "../../../store/accounts";
 import {
 	ACCOUNTS_2FA_ROUTE,
 	ACCOUNTS_BAD_ROUTE,
 	ACCOUNTS_GOOD_ROUTE,
+	ACCOUNTS_ROUTE,
 	ACCOUNTS_SMS_ROUTE,
 	CHAT_ROUTE
 } from "../../../utils/constants/routes";
 import ItemsTable from "../../../components/ItemsTable/ItemsTable";
+import useLoadFns from "../../../hooks/useLoadFns.hook";
 
 const AccountsTable = observer(() => {
 	const location = useLocation();
 	const navigate = useNavigate();
-	const [status, setStatus] = useState("");
 
-	const params = useMemo(
-		() => ({page: 1, per_page: accounts.limit, table: true, status}),
-		[status]
+	const loadAllByStatus = status => params =>
+		accountsState.loadAll({
+			...params,
+			status
+		});
+
+	const loadAccounts = useLoadFns(
+		{
+			[ACCOUNTS_GOOD_ROUTE]: loadAllByStatus("good"),
+			[ACCOUNTS_BAD_ROUTE]: loadAllByStatus("bad"),
+			[ACCOUNTS_2FA_ROUTE]: loadAllByStatus("2fa"),
+			[ACCOUNTS_SMS_ROUTE]: loadAllByStatus("sms"),
+			[ACCOUNTS_ROUTE]: loadAllByStatus("")
+		},
+		accountsState.clearAll,
+		accountsState.clear
 	);
 
-	useEffect(() => {
-		accounts.fetchAll(params);
-	}, [params, status]);
-
-	useEffect(() => {
-		switch (location.pathname) {
-			case ACCOUNTS_GOOD_ROUTE:
-				setStatus("good");
-				break;
-			case ACCOUNTS_BAD_ROUTE:
-				setStatus("bad");
-				break;
-			case ACCOUNTS_2FA_ROUTE:
-				setStatus("2fa");
-				break;
-			case ACCOUNTS_SMS_ROUTE:
-				setStatus("sms");
-				break;
-			default:
-				setStatus("");
-		}
-	}, [location.pathname]);
-
-	const fetchMore = useCallback(
-		() => accounts.fetchMore({...params, page: accounts.page + 1}),
-		[params]
+	useEffect(
+		() =>
+			autorun(() =>
+				loadAccounts({page: accountsState.page, per_page: accountsState.limit})
+			),
+		[loadAccounts]
 	);
 
-	useEffect(() => () => accounts.setIsLoading(true), []);
+	const handleLoadMore = () => accountsState.setPage(accountsState.page + 1);
 
 	const redirectToChat = () =>
 		navigate(CHAT_ROUTE, {state: {prevPath: location.pathname}});
 
-	const handleEdit = uuid => async account => accounts.edit(uuid, account);
+	const handleEdit = uuid => async account => accountsState.edit(uuid, account);
 
-	const handleDelete = async uuid => accounts.delete(uuid);
+	const handleDelete = async uuid => accountsState.delete(uuid);
 
 	const handleOpen = async uuid =>
-		accounts.fetchAccountToken(uuid, redirectToChat);
+		accountsState.loadAccountToken(uuid, redirectToChat);
 
 	return (
 		<ItemsTable
-			isLoading={accounts.isLoading}
-			isLoadingMore={accounts.isLoadingMore}
+			isLoading={accountsState.isLoading}
+			isLoadingMore={accountsState.isLoadingMore}
 			onEdit={handleEdit}
 			onOpen={handleOpen}
 			onDelete={handleDelete}
-			fetchMore={fetchMore}
-			headCells={accounts.headCells}
-			inAction={accounts.inAction}
-			hasMore={accounts.hasMore}
-			items={accounts.accounts}
+			onLoadMore={handleLoadMore}
+			headCells={accountsState.headCells}
+			inAction={accountsState.inAction}
+			hasMore={accountsState.hasMore}
+			items={accountsState.accounts}
 		/>
 	);
 });
